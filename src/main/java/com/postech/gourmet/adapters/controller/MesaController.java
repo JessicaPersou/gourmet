@@ -1,7 +1,9 @@
 package com.postech.gourmet.adapters.controller;
 
 import com.postech.gourmet.adapters.dto.ReservaDTO;
+import com.postech.gourmet.adapters.mapper.Converter;
 import com.postech.gourmet.application.usecase.ReservaMesaUseCase;
+import com.postech.gourmet.domain.entities.Reserva;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +20,10 @@ public class MesaController {
     @PostMapping("/{mesaId}/reservas")
     public ResponseEntity<ReservaDTO> reservarMesa(@PathVariable Long mesaId,
                                                    @RequestParam String cliente,
-                                                   @RequestParam LocalDateTime dataHora) {
-        ReservaDTO reserva = reservaMesaUseCase.reservarMesa(mesaId, cliente, dataHora);
-        return ResponseEntity.ok(reserva);
+                                                   @RequestParam String dataHora) {
+        LocalDateTime dataHoraConvertida = LocalDateTime.parse(dataHora);
+        Reserva reserva = reservaMesaUseCase.reservarMesa(mesaId, cliente, dataHoraConvertida);
+        ReservaDTO reservaDTO = Converter.toReservaDTO(reserva);
+        return ResponseEntity.ok(reservaDTO);
     }
 }

@@ -15,8 +15,12 @@ public class AvaliacaoData {
     private Long id;
 
     private String cliente;
+    private int nota;
+    private String comentario;
     private LocalDateTime dataHora;
-
+    @ManyToOne
+    @JoinColumn(name = "restaurante_id")
+    private RestauranteData restaurante;
     @ManyToOne
     @JoinColumn(name = "mesa_id")
     private MesaData mesa;

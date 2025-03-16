@@ -4,9 +4,11 @@ import com.postech.gourmet.domain.entities.Mesa;
 import com.postech.gourmet.domain.entities.Reserva;
 import com.postech.gourmet.domain.repositories.MesaRepository;
 import com.postech.gourmet.domain.repositories.ReservaRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Service
 public class ReservaMesaUseCase {
     private final ReservaRepository reservaRepository;
     private final MesaRepository mesaRepository;

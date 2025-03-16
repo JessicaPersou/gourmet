@@ -14,13 +14,13 @@ public class MesaData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
-    private String endereco;
-    private String telefone;
+    private int numero;
+    private int capacidade;
 
-    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MesaData> mesas;
+    @ManyToOne
+    @JoinColumn(name = "restaurante_id")
+    private RestauranteData restaurante;
 
-    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AvaliacaoData> avaliacoes;
+    @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservaData> reservas;
 }

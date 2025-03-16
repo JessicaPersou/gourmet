@@ -1,9 +1,9 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: restaurant_db
+    container_name: gourmet_db
     environment:
-      POSTGRES_DB: restaurant_db
+      POSTGRES_DB: gourmet_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - restaurant_network
+      - gourmet_network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -20,22 +20,22 @@ services:
 
   app:
     build: .
-    container_name: restaurant_app
+    container_name: gourmet_app
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/restaurant_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gourmet_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
     ports:
       - "8080:8080"
     networks:
-      - restaurant_network
+      - gourmet_network
     restart: always
 
 networks:
-  restaurant_network:
+  gourmet_network:
     driver: bridge
 
 volumes:
