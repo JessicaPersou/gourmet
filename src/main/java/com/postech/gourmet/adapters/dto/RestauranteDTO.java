@@ -1,16 +1,68 @@
 package com.postech.gourmet.adapters.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RestauranteDTO {
     private Long id;
-    private String nome;
-    private String endereco;
-    private String telefone;
-    private List<MesaDTO> mesas;
-    private List<AvaliacaoDTO> avaliacoes;
 
-    // Getters e Setters
+    @NotBlank(message = "O nome é obrigatório")
+    @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
+    private String nome;
+
+    @NotBlank(message = "O endereço é obrigatório")
+    private String endereco;
+
+    @Pattern(regexp = "^\\(\\d{2}\\)\\s\\d{4,5}-\\d{4}$", message = "Telefone deve estar no formato (xx) xxxxx-xxxx")
+    private String telefone;
+
+    private String tipoCozinha;
+
+    private Map<DayOfWeek, HorarioFuncionamentoDTO> horariosFuncionamento = new HashMap<>();
+
+    private List<MesaDTO> mesas = new ArrayList<>();
+
+    private List<AvaliacaoDTO> avaliacoes = new ArrayList<>();
+
+    private double mediaAvaliacoes;
+
+    public static class HorarioFuncionamentoDTO {
+        private LocalTime abertura;
+        private LocalTime fechamento;
+
+        public HorarioFuncionamentoDTO() {
+        }
+
+        public HorarioFuncionamentoDTO(LocalTime abertura, LocalTime fechamento) {
+            this.abertura = abertura;
+            this.fechamento = fechamento;
+        }
+
+        public LocalTime getAbertura() {
+            return abertura;
+        }
+
+        public void setAbertura(LocalTime abertura) {
+            this.abertura = abertura;
+        }
+
+        public LocalTime getFechamento() {
+            return fechamento;
+        }
+
+        public void setFechamento(LocalTime fechamento) {
+            this.fechamento = fechamento;
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,7 +100,7 @@ public class RestauranteDTO {
     }
 
     public void setMesas(List<MesaDTO> mesas) {
-        this.mesas = mesas;
+        this.mesas = mesas != null ? mesas : new ArrayList<>();
     }
 
     public List<AvaliacaoDTO> getAvaliacoes() {
@@ -56,6 +108,31 @@ public class RestauranteDTO {
     }
 
     public void setAvaliacoes(List<AvaliacaoDTO> avaliacoes) {
-        this.avaliacoes = avaliacoes;
+        this.avaliacoes = avaliacoes != null ? avaliacoes : new ArrayList<>();
+    }
+
+    public String getTipoCozinha() {
+        return tipoCozinha;
+    }
+
+    public void setTipoCozinha(String tipoCozinha) {
+        this.tipoCozinha = tipoCozinha;
+    }
+
+    public Map<DayOfWeek, HorarioFuncionamentoDTO> getHorariosFuncionamento() {
+        return horariosFuncionamento;
+    }
+
+    public void setHorariosFuncionamento(Map<DayOfWeek, HorarioFuncionamentoDTO> horariosFuncionamento) {
+        this.horariosFuncionamento = horariosFuncionamento != null ?
+                horariosFuncionamento : new HashMap<>();
+    }
+
+    public double getMediaAvaliacoes() {
+        return mediaAvaliacoes;
+    }
+
+    public void setMediaAvaliacoes(double mediaAvaliacoes) {
+        this.mediaAvaliacoes = mediaAvaliacoes;
     }
 }

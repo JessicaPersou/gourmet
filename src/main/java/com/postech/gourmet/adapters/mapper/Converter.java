@@ -41,7 +41,7 @@ public class Converter {
         dto.setId(mesa.getId());
         dto.setNumero(mesa.getNumero());
         dto.setCapacidade(mesa.getCapacidade());
-        dto.setRestaurante(toRestauranteDTO(mesa.getRestaurante()));
+//        dto.setRestauranteId(mesa.getRestaurante().getId()));
         dto.setReservas(mesa.getReservas().stream().map(Converter::toReservaDTO).collect(Collectors.toList()));
         return dto;
     }
@@ -51,7 +51,7 @@ public class Converter {
         mesa.setId(dto.getId());
         mesa.setNumero(dto.getNumero());
         mesa.setCapacidade(dto.getCapacidade());
-        mesa.setRestaurante(toRestaurante(dto.getRestaurante()));
+//        mesa.setRestaurante(toRestaurante(dto.getRestaurante()));
         mesa.setReservas(dto.getReservas().stream().map(Converter::toReserva).collect(Collectors.toList()));
         return mesa;
     }
@@ -61,7 +61,7 @@ public class Converter {
         dto.setId(reserva.getId());
         dto.setCliente(reserva.getCliente());
         dto.setDataHora(reserva.getDataHora());
-        dto.setMesa(toMesaDTO(reserva.getMesa()));
+        dto.setMesaId(reserva.getMesa().getId());
         return dto;
     }
 
@@ -70,7 +70,7 @@ public class Converter {
         reserva.setId(dto.getId());
         reserva.setCliente(dto.getCliente());
         reserva.setDataHora(dto.getDataHora());
-        reserva.setMesa(toMesa(dto.getMesa()));
+//        reserva.setMesa(toMesa(dto.getMesa()));
         return reserva;
     }
 
@@ -80,7 +80,7 @@ public class Converter {
         dto.setCliente(avaliacao.getCliente());
         dto.setNota(avaliacao.getNota());
         dto.setComentario(avaliacao.getComentario());
-        dto.setRestaurante(toRestauranteDTO(avaliacao.getRestaurante()));
+//        dto.setRestaurante(toRestauranteDTO(avaliacao.getRestaurante()));
         return dto;
     }
 
@@ -90,7 +90,7 @@ public class Converter {
         avaliacao.setCliente(dto.getCliente());
         avaliacao.setNota(dto.getNota());
         avaliacao.setComentario(dto.getComentario());
-        avaliacao.setRestaurante(toRestaurante(dto.getRestaurante()));
+//        avaliacao.setRestaurante(toRestaurante(dto.getRestaurante()));
         return avaliacao;
     }
 

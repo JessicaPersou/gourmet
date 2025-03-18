@@ -1,7 +1,10 @@
+version: '3.8'
+
 services:
+  # PostgreSQL Database
   postgres:
     image: postgres:latest
-    container_name: gourmet_db
+    container_name: gourmet-db
     environment:
       POSTGRES_DB: gourmet_db
       POSTGRES_USER: postgres
@@ -9,18 +12,21 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - gourmet_network
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - gourmet-network
 
-  app:
-    build: .
-    container_name: gourmet_app
+  # Restaurant Reservation Application
+  gourmet-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gourmet-app
     depends_on:
       postgres:
         condition: service_healthy
@@ -31,12 +37,12 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - gourmet_network
-    restart: always
+      - gourmet-network
+    restart: on-failure
 
 networks:
-  gourmet_network:
+  gourmet-network:
     driver: bridge
 
 volumes:
-  postgres_data:
+  postgres-data:
