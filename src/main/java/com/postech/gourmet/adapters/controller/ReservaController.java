@@ -1,6 +1,7 @@
 package com.postech.gourmet.adapters.controller;
 
 import com.postech.gourmet.adapters.dto.ReservaDTO;
+import com.postech.gourmet.adapters.mapper.EntityMapper;
 import com.postech.gourmet.application.usecase.GerenciarReservaUseCase;
 import com.postech.gourmet.application.usecase.ReservaMesaUseCase;
 import com.postech.gourmet.domain.entities.Reserva;

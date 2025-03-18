@@ -1,10 +1,11 @@
 package com.postech.gourmet.adapters.controller;
 
 import com.postech.gourmet.adapters.dto.AvaliacaoDTO;
+import com.postech.gourmet.adapters.mapper.EntityMapper;
 import com.postech.gourmet.application.usecase.AvaliarRestauranteUseCase;
 import com.postech.gourmet.domain.entities.Avaliacao;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,14 @@ import java.util.List;
 public class AvaliacaoController {
 
     private final AvaliarRestauranteUseCase avaliarRestauranteUseCase;
-    private final ModelMapper modelMapper;
+    private final EntityMapper entityMapper;
 
+    @Autowired
     public AvaliacaoController(
             AvaliarRestauranteUseCase avaliarRestauranteUseCase,
-            ModelMapper modelMapper) {
+            EntityMapper entityMapper) {
         this.avaliarRestauranteUseCase = avaliarRestauranteUseCase;
-        this.modelMapper = this.modelMapper;
+        this.entityMapper = entityMapper;
     }
 
     @PostMapping
@@ -39,7 +41,7 @@ public class AvaliacaoController {
                 restauranteId, usuarioId, nota, comentario);
 
         // Converte a entidade para DTO
-        AvaliacaoDTO novaAvaliacaoDTO = modelMapper.mapTo(avaliacao, AvaliacaoDTO.class);
+        AvaliacaoDTO novaAvaliacaoDTO = entityMapper.mapTo(avaliacao, AvaliacaoDTO.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novaAvaliacaoDTO);
     }
@@ -51,7 +53,7 @@ public class AvaliacaoController {
         List<Avaliacao> avaliacoes = avaliarRestauranteUseCase.buscarAvaliacoesPorRestaurante(restauranteId);
 
         // Converte a lista de entidades para lista de DTOs
-        List<AvaliacaoDTO> avaliacoesDTOs = modelMapper.mapToList(avaliacoes, AvaliacaoDTO.class);
+        List<AvaliacaoDTO> avaliacoesDTOs = entityMapper.mapToList(avaliacoes, AvaliacaoDTO.class);
 
         return ResponseEntity.ok(avaliacoesDTOs);
     }
@@ -63,7 +65,7 @@ public class AvaliacaoController {
         List<Avaliacao> avaliacoes = avaliarRestauranteUseCase.buscarAvaliacoesPorUsuario(usuarioId);
 
         // Converte a lista de entidades para lista de DTOs
-        List<AvaliacaoDTO> avaliacoesDTOs = modelMapper.mapToList(avaliacoes, AvaliacaoDTO.class);
+        List<AvaliacaoDTO> avaliacoesDTOs = entityMapper.mapToList(avaliacoes, AvaliacaoDTO.class);
 
         return ResponseEntity.ok(avaliacoesDTOs);
     }

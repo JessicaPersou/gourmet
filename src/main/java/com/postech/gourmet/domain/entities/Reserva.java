@@ -9,6 +9,7 @@ public class Reserva {
     private Mesa mesa;
     private Usuario usuario;  // Adicionada referência ao usuário
     private StatusReserva status;  // Novo campo para controlar status da reserva
+    private Integer numPessoas; // Campo adicionado para compatibilidade
 
     public enum StatusReserva {
         PENDENTE,
@@ -79,6 +80,14 @@ public class Reserva {
 
     public void setStatus(StatusReserva status) {
         this.status = status;
+    }
+
+    public Integer getNumPessoas() {
+        return numPessoas;
+    }
+
+    public void setNumPessoas(Integer numPessoas) {
+        this.numPessoas = numPessoas;
     }
 
     public void confirmar() {

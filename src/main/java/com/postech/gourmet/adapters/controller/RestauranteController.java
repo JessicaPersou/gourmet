@@ -2,6 +2,7 @@ package com.postech.gourmet.adapters.controller;
 
 import com.postech.gourmet.adapters.dto.MesaDTO;
 import com.postech.gourmet.adapters.dto.RestauranteDTO;
+import com.postech.gourmet.adapters.mapper.EntityMapper;
 import com.postech.gourmet.application.usecase.BuscarRestauranteUseCase;
 import com.postech.gourmet.application.usecase.CadastroRestauranteUseCase;
 import com.postech.gourmet.domain.entities.Mesa;

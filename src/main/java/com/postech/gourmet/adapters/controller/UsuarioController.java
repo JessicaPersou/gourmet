@@ -1,10 +1,11 @@
 package com.postech.gourmet.adapters.controller;
 
 import com.postech.gourmet.adapters.dto.UsuarioDTO;
+import com.postech.gourmet.adapters.mapper.EntityMapper;
 import com.postech.gourmet.domain.entities.Usuario;
-import com.postech.gourmet.domain.repositories.UsuarioRepository;
 import com.postech.gourmet.domain.exception.DuplicateResourceException;
 import com.postech.gourmet.domain.exception.ResourceNotFoundException;
+import com.postech.gourmet.domain.repositories.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,9 +66,8 @@ public class UsuarioController {
             @Valid @RequestBody UsuarioDTO usuarioDTO) {
 
         // Verifica se o usuário existe
-//        if (!usuarioRepository.existsById(id)) {
-//            throw new ResourceNotFoundException("Usuário não encontrado com ID: " + id);
-//        }
+        usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + id));
 
         // Converte DTO para entidade de domínio
         Usuario usuario = entityMapper.mapTo(usuarioDTO, Usuario.class);

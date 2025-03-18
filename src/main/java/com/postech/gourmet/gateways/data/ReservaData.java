@@ -2,13 +2,12 @@ package com.postech.gourmet.gateways.data;
 
 import com.postech.gourmet.domain.entities.Mesa;
 import com.postech.gourmet.domain.entities.Reserva;
-
-import java.time.LocalDateTime;
-
 import com.postech.gourmet.domain.entities.Restaurante;
 import com.postech.gourmet.domain.entities.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reserva")
@@ -23,7 +22,8 @@ public class ReservaData {
 
     private String cliente;
     private LocalDateTime dataHora;
-    private String status;  // Novo campo para status da reserva
+    private String status;  // Armazena o nome do enum StatusReserva
+    private Integer numPessoas; // Campo adicionado para compatibilidade
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mesa_id")
@@ -31,14 +31,17 @@ public class ReservaData {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
-    private UsuarioData usuario;  // Novo campo para relacionamento com usuário
+    private UsuarioData usuario;
 
-    // Método toDomain atualizado
+    /**
+     * Converte entidade de dados para objeto de domínio
+     */
     public Reserva toDomain() {
         Reserva reserva = new Reserva();
         reserva.setId(this.id);
         reserva.setCliente(this.cliente);
         reserva.setDataHora(this.dataHora);
+        reserva.setNumPessoas(this.numPessoas);
 
         // Converte string para enum
         if (this.status != null) {
@@ -52,7 +55,7 @@ public class ReservaData {
             reserva.setStatus(Reserva.StatusReserva.PENDENTE);
         }
 
-        // Evita referência circular
+        // Evita referência circular na mesa
         if (this.mesa != null) {
             Mesa mesaDomain = new Mesa();
             mesaDomain.setId(this.mesa.getId());

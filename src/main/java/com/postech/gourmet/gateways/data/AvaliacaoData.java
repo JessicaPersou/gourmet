@@ -2,10 +2,11 @@ package com.postech.gourmet.gateways.data;
 
 import com.postech.gourmet.domain.entities.Avaliacao;
 import com.postech.gourmet.domain.entities.Restaurante;
-
-import java.time.LocalDateTime;
+import com.postech.gourmet.domain.entities.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "avaliacao")
@@ -22,6 +23,7 @@ public class AvaliacaoData {
     @JoinColumn(name = "usuario_id")
     private UsuarioData usuario;
 
+    private String cliente;
     private int nota;
     private String comentario;
     private LocalDateTime dataHora;
@@ -30,24 +32,30 @@ public class AvaliacaoData {
     @JoinColumn(name = "restaurante_id")
     private RestauranteData restaurante;
 
-    // Removido campo mesa que não faz parte do domínio de Avaliacao
-
     /**
      * Converte entidade de dados para objeto de domínio
      */
     public Avaliacao toDomain() {
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setId(this.id);
-        avaliacao.setUsuario(this.toDomain().getUsuario());
         avaliacao.setNota(this.nota);
         avaliacao.setComentario(this.comentario);
+        avaliacao.setDataHora(this.dataHora);
+        avaliacao.setCliente(this.cliente);
 
         // Evita referência circular convertendo apenas o necessário
+        if (this.usuario != null) {
+            Usuario usuario = new Usuario();
+            usuario.setId(this.usuario.getId());
+            usuario.setNome(this.usuario.getNome());
+            avaliacao.setUsuario(usuario);
+        }
+
         if (this.restaurante != null) {
-            Restaurante restauranteDomain = new Restaurante();
-            restauranteDomain.setId(this.restaurante.getId());
-            restauranteDomain.setNome(this.restaurante.getNome());
-            avaliacao.setRestaurante(restauranteDomain);
+            Restaurante restaurante = new Restaurante();
+            restaurante.setId(this.restaurante.getId());
+            restaurante.setNome(this.restaurante.getNome());
+            avaliacao.setRestaurante(restaurante);
         }
 
         return avaliacao;

@@ -1,5 +1,6 @@
 package com.postech.gourmet.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ public class Mesa {
     private int capacidade;
     private Restaurante restaurante;
     private List<Reserva> reservas;
+    private String status; // Campo adicionado para compatibilidade
 
     public Mesa() {
         this.reservas = new ArrayList<>();
@@ -66,6 +68,14 @@ public class Mesa {
         this.reservas = reservas != null ? reservas : new ArrayList<>();
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public void adicionarReserva(Reserva reserva) {
         if (this.reservas == null) {
             this.reservas = new ArrayList<>();
@@ -73,15 +83,19 @@ public class Mesa {
         this.reservas.add(reserva);
     }
 
-    public boolean estaDisponivel(java.time.LocalDateTime dataHora) {
+    public boolean estaDisponivel(LocalDateTime dataHora) {
         if (this.reservas == null || this.reservas.isEmpty()) {
             return true;
         }
 
         return this.reservas.stream()
                 .noneMatch(reserva -> {
-                    java.time.LocalDateTime inicioReserva = reserva.getDataHora();
-                    java.time.LocalDateTime fimReserva = inicioReserva.plusHours(2);
+                    if (reserva.getStatus() == Reserva.StatusReserva.CANCELADA) {
+                        return false; // Reservas canceladas não afetam disponibilidade
+                    }
+
+                    LocalDateTime inicioReserva = reserva.getDataHora();
+                    LocalDateTime fimReserva = inicioReserva.plusHours(2);
 
                     return (dataHora.isEqual(inicioReserva) || dataHora.isAfter(inicioReserva))
                             && (dataHora.isBefore(fimReserva));
