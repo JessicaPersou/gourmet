@@ -1,5 +1,7 @@
 package com.postech.gourmet.application.usecase;
 
+import com.postech.gourmet.adapters.dto.HorarioFuncionamentoDTO;
+import com.postech.gourmet.adapters.dto.RestauranteDTO;
 import com.postech.gourmet.domain.entities.Mesa;
 import com.postech.gourmet.domain.entities.Restaurante;
 import com.postech.gourmet.domain.entities.Usuario;
@@ -13,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CadastroRestauranteUseCase {
@@ -27,16 +31,27 @@ public class CadastroRestauranteUseCase {
         this.usuarioRepository = usuarioRepository;
     }
 
-    /**
-     * Cadastra um novo restaurante
-     *
-     * @param restaurante Dados do restaurante a ser cadastrado
-     * @param usuarioId ID do usuário proprietário do restaurante
-     * @return Restaurante cadastrado
-     */
     @Transactional
-    public Restaurante cadastrarRestaurante(Restaurante restaurante, Long usuarioId) {
-        // Validação dos dados do restaurante
+    public Restaurante cadastrarRestaurante(RestauranteDTO restauranteDTO) {
+
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNome(restauranteDTO.getNome());
+        restaurante.setEndereco(restauranteDTO.getEndereco());
+        restaurante.setTelefone(restauranteDTO.getTelefone());
+        restaurante.setTipoCozinha(restauranteDTO.getTipoCozinha());
+
+        Map<DayOfWeek, Restaurante.HorarioFuncionamento> horarios = new HashMap<>();
+        for (Map.Entry<DayOfWeek, HorarioFuncionamentoDTO> entry :
+                restauranteDTO.getHorariosFuncionamento().entrySet()) {
+
+            Restaurante.HorarioFuncionamento horario = new Restaurante.HorarioFuncionamento(
+                    entry.getValue().getAbertura(),
+                    entry.getValue().getFechamento()
+            );
+            horarios.put(entry.getKey(), horario);
+        }
+        restaurante.setHorariosFuncionamento(horarios);
+
         if (restaurante.getNome() == null || restaurante.getNome().trim().isEmpty()) {
             throw new InvalidRequestException("O nome do restaurante é obrigatório");
         }
@@ -45,42 +60,23 @@ public class CadastroRestauranteUseCase {
             throw new InvalidRequestException("O endereço do restaurante é obrigatório");
         }
 
-        // Verifica se o usuário existe e tem permissão para cadastrar restaurantes
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + usuarioId));
-
-        if (!usuario.isRestaurante()) {
-            throw new InvalidRequestException("Apenas usuários com perfil de restaurante podem cadastrar restaurantes");
-        }
-
-        // Verifica se já existe restaurante com o mesmo nome e endereço
         if (restauranteRepository.existsByNomeAndEndereco(restaurante.getNome(), restaurante.getEndereco())) {
             throw new DuplicateResourceException("Já existe um restaurante com este nome e endereço");
         }
 
-        // Configura horários padrão se não forem fornecidos
         if (restaurante.getHorariosFuncionamento().isEmpty()) {
             configurarHorariosDefault(restaurante);
         }
 
-        // Salva o restaurante
         return restauranteRepository.save(restaurante);
     }
 
-    /**
-     * Adiciona mesas a um restaurante existente
-     *
-     * @param restauranteId ID do restaurante
-     * @param mesas Lista de mesas a serem adicionadas
-     * @return Restaurante atualizado com as novas mesas
-     */
     @Transactional
     public Restaurante adicionarMesas(Long restauranteId, List<Mesa> mesas) {
         Restaurante restaurante = restauranteRepository.findById(restauranteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurante não encontrado com ID: " + restauranteId));
 
         for (Mesa mesa : mesas) {
-            // Validação da mesa
             if (mesa.getNumero() <= 0) {
                 throw new InvalidRequestException("O número da mesa deve ser maior que zero");
             }
@@ -89,7 +85,6 @@ public class CadastroRestauranteUseCase {
                 throw new InvalidRequestException("A capacidade da mesa deve ser maior que zero");
             }
 
-            // Verifica se já existe uma mesa com o mesmo número
             boolean mesaDuplicada = restaurante.getMesas().stream()
                     .anyMatch(m -> m.getNumero() == mesa.getNumero());
 
@@ -97,57 +92,53 @@ public class CadastroRestauranteUseCase {
                 throw new DuplicateResourceException("Já existe uma mesa com o número " + mesa.getNumero());
             }
 
-            // Adiciona a mesa ao restaurante
             mesa.setRestaurante(restaurante);
             restaurante.adicionarMesa(mesa);
         }
 
-        // Salva o restaurante atualizado
         return restauranteRepository.save(restaurante);
     }
 
-    /**
-     * Atualiza dados de um restaurante existente
-     *
-     * @param id ID do restaurante
-     * @param dadosAtualizados Novos dados do restaurante
-     * @return Restaurante atualizado
-     */
     @Transactional
-    public Restaurante atualizarRestaurante(Long id, Restaurante dadosAtualizados) {
+    public Restaurante atualizarRestaurante(Long id, RestauranteDTO restauranteDTO) {
         Restaurante restaurante = restauranteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurante não encontrado com ID: " + id));
 
-        // Atualiza apenas os dados fornecidos
-        if (dadosAtualizados.getNome() != null && !dadosAtualizados.getNome().trim().isEmpty()) {
-            restaurante.setNome(dadosAtualizados.getNome());
+
+        if (restauranteDTO.getNome() != null && !restauranteDTO.getNome().trim().isEmpty()) {
+            restaurante.setNome(restauranteDTO.getNome());
         }
 
-        if (dadosAtualizados.getEndereco() != null && !dadosAtualizados.getEndereco().trim().isEmpty()) {
-            restaurante.setEndereco(dadosAtualizados.getEndereco());
+        if (restauranteDTO.getEndereco() != null && !restauranteDTO.getEndereco().trim().isEmpty()) {
+            restaurante.setEndereco(restauranteDTO.getEndereco());
         }
 
-        if (dadosAtualizados.getTelefone() != null) {
-            restaurante.setTelefone(dadosAtualizados.getTelefone());
+        if (restauranteDTO.getTelefone() != null) {
+            restaurante.setTelefone(restauranteDTO.getTelefone());
         }
 
-        if (dadosAtualizados.getTipoCozinha() != null) {
-            restaurante.setTipoCozinha(dadosAtualizados.getTipoCozinha());
+        if (restauranteDTO.getTipoCozinha() != null) {
+            restaurante.setTipoCozinha(restauranteDTO.getTipoCozinha());
         }
 
-        if (dadosAtualizados.getHorariosFuncionamento() != null && !dadosAtualizados.getHorariosFuncionamento().isEmpty()) {
-            restaurante.setHorariosFuncionamento(dadosAtualizados.getHorariosFuncionamento());
-        }
+        if (restauranteDTO.getHorariosFuncionamento() != null && !restauranteDTO.getHorariosFuncionamento().isEmpty()) {
+            Map<DayOfWeek, Restaurante.HorarioFuncionamento> horarios = new HashMap<>();
 
-        // Salva o restaurante atualizado
+            for (Map.Entry<DayOfWeek, HorarioFuncionamentoDTO> entry :
+                    restauranteDTO.getHorariosFuncionamento().entrySet()) {
+
+                Restaurante.HorarioFuncionamento horario = new Restaurante.HorarioFuncionamento(
+                        entry.getValue().getAbertura(),
+                        entry.getValue().getFechamento()
+                );
+                horarios.put(entry.getKey(), horario);
+            }
+
+            restaurante.setHorariosFuncionamento(horarios);
+        }
         return restauranteRepository.save(restaurante);
     }
 
-    /**
-     * Exclui um restaurante
-     *
-     * @param id ID do restaurante a ser excluído
-     */
     @Transactional
     public void excluirRestaurante(Long id) {
         if (!restauranteRepository.existsById(id)) {
@@ -157,18 +148,13 @@ public class CadastroRestauranteUseCase {
         restauranteRepository.deleteById(id);
     }
 
-    /**
-     * Configura horários padrão para um restaurante (11h às 23h, todos os dias exceto domingo)
-     *
-     * @param restaurante Restaurante a ser configurado
-     */
+
     private void configurarHorariosDefault(Restaurante restaurante) {
-        // Horário padrão: 11h às 23h, todos os dias exceto domingo
         LocalTime abertura = LocalTime.of(11, 0);
         LocalTime fechamento = LocalTime.of(23, 0);
 
         for (DayOfWeek dia : DayOfWeek.values()) {
-            if (dia != DayOfWeek.SUNDAY) { // Domingo fechado por padrão
+            if (dia != DayOfWeek.SUNDAY) {
                 restaurante.definirHorarioFuncionamento(dia, abertura, fechamento);
             }
         }

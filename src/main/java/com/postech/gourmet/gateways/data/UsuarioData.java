@@ -33,9 +33,6 @@ public class UsuarioData {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<AvaliacaoData> avaliacoes = new ArrayList<>();
 
-    /**
-     * Converte entidade de dados para objeto de domínio
-     */
     public Usuario toDomain() {
         Usuario usuario = new Usuario();
         usuario.setId(this.id);
@@ -43,9 +40,7 @@ public class UsuarioData {
         usuario.setEmail(this.email);
         usuario.setSenha(this.senha);
         usuario.setTelefone(this.telefone);
-        usuario.setRestaurante(this.isRestaurante);
 
-        // Evita referências circulares
         usuario.setReservas(new ArrayList<>());
         usuario.setAvaliacoes(new ArrayList<>());
 

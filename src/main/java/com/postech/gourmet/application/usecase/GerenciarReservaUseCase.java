@@ -85,10 +85,8 @@ public class GerenciarReservaUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + usuarioId));
 
         boolean isOwner = reserva.getUsuario() != null && reserva.getUsuario().getId().equals(usuarioId);
-        boolean isRestaurantOwner = usuario.isRestaurante() &&
-                reserva.getMesa().getRestaurante().getId().equals(usuario.getId());
 
-        if (!isOwner && !isRestaurantOwner) {
+        if (!isOwner) {
             throw new InvalidRequestException("Você não tem permissão para cancelar esta reserva");
         }
 
@@ -101,7 +99,6 @@ public class GerenciarReservaUseCase {
             throw new InvalidRequestException("Esta reserva já está cancelada");
         }
 
-        // Cancela a reserva
         reserva.cancelar();
         reservaRepository.save(reserva);
     }

@@ -16,10 +16,6 @@ public class UsuarioDTO {
     @Email(message = "Email inválido")
     private String email;
 
-    @NotBlank(message = "A senha é obrigatória")
-    @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
-    private String senha;
-
     private String telefone;
     private boolean isRestaurante;
     private List<ReservaDTO> reservas;
@@ -49,15 +45,6 @@ public class UsuarioDTO {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
     public String getTelefone() {
         return telefone;
     }

@@ -9,7 +9,6 @@ public class Usuario {
     private String email;
     private String senha;
     private String telefone;
-    private boolean isRestaurante; // indica se é um proprietário de restaurante
     private List<Reserva> reservas = new ArrayList<>();
     private List<Avaliacao> avaliacoes = new ArrayList<>();
 
@@ -18,20 +17,16 @@ public class Usuario {
         this.avaliacoes = new ArrayList<>();
     }
 
-    // Construtor completo
-    public Usuario(Long id, String nome, String email, String senha, String telefone,
-                   boolean isRestaurante, List<Reserva> reservas, List<Avaliacao> avaliacoes) {
+    public Usuario(Long id, String nome, String email, String senha, String telefone, List<Reserva> reservas, List<Avaliacao> avaliacoes) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.telefone = telefone;
-        this.isRestaurante = isRestaurante;
         this.reservas = reservas != null ? reservas : new ArrayList<>();
         this.avaliacoes = avaliacoes != null ? avaliacoes : new ArrayList<>();
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -70,14 +65,6 @@ public class Usuario {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
-    }
-
-    public boolean isRestaurante() {
-        return isRestaurante;
-    }
-
-    public void setRestaurante(boolean restaurante) {
-        isRestaurante = restaurante;
     }
 
     public List<Reserva> getReservas() {

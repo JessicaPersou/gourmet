@@ -1,3 +1,4 @@
+// Arquivo: src/main/java/com/postech/gourmet/adapters/dto/RestauranteDTO.java
 package com.postech.gourmet.adapters.dto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -5,7 +6,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,35 +33,6 @@ public class RestauranteDTO {
     private List<AvaliacaoDTO> avaliacoes = new ArrayList<>();
 
     private double mediaAvaliacoes;
-
-    public static class HorarioFuncionamentoDTO {
-        private LocalTime abertura;
-        private LocalTime fechamento;
-
-        public HorarioFuncionamentoDTO() {
-        }
-
-        public HorarioFuncionamentoDTO(LocalTime abertura, LocalTime fechamento) {
-            this.abertura = abertura;
-            this.fechamento = fechamento;
-        }
-
-        public LocalTime getAbertura() {
-            return abertura;
-        }
-
-        public void setAbertura(LocalTime abertura) {
-            this.abertura = abertura;
-        }
-
-        public LocalTime getFechamento() {
-            return fechamento;
-        }
-
-        public void setFechamento(LocalTime fechamento) {
-            this.fechamento = fechamento;
-        }
-    }
 
     public Long getId() {
         return id;

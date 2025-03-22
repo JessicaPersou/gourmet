@@ -2,6 +2,10 @@ package com.postech.gourmet.adapters.controller;
 
 import com.postech.gourmet.adapters.dto.UsuarioDTO;
 import com.postech.gourmet.adapters.mapper.EntityMapper;
+import com.postech.gourmet.application.usecase.CadastroRestauranteUseCase;
+import com.postech.gourmet.application.usecase.usuario.AtualizarUsuarioUseCase;
+import com.postech.gourmet.application.usecase.usuario.BuscarUsuarioUseCase;
+import com.postech.gourmet.application.usecase.usuario.CadastrarUsuarioUseCase;
 import com.postech.gourmet.domain.entities.Usuario;
 import com.postech.gourmet.domain.exception.DuplicateResourceException;
 import com.postech.gourmet.domain.exception.ResourceNotFoundException;
@@ -17,68 +21,44 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
+    private final CadastrarUsuarioUseCase cadastrarUsuarioUseCase;
+    private final BuscarUsuarioUseCase buscarUsuarioUseCase;
+    private final AtualizarUsuarioUseCase atualizarUsuarioUseCase;
     private final EntityMapper entityMapper;
 
     @Autowired
     public UsuarioController(
             UsuarioRepository usuarioRepository,
+            CadastrarUsuarioUseCase cadastrarUsuarioUseCase,
+            BuscarUsuarioUseCase buscarUsuarioUseCase,
+            AtualizarUsuarioUseCase atualizarUsuarioUseCase,
             EntityMapper entityMapper) {
         this.usuarioRepository = usuarioRepository;
+        this.cadastrarUsuarioUseCase = cadastrarUsuarioUseCase;
+        this.buscarUsuarioUseCase = buscarUsuarioUseCase;
+        this.atualizarUsuarioUseCase = atualizarUsuarioUseCase;
         this.entityMapper = entityMapper;
     }
 
     @PostMapping
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
-
-        // Verifica se já existe um usuário com o mesmo email
-        if (usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
-            throw new DuplicateResourceException("Já existe um usuário com este email");
-        }
-
-        // Converte DTO para entidade de domínio
-        Usuario usuario = entityMapper.mapTo(usuarioDTO, Usuario.class);
-
-        // Salva o usuário
-        Usuario novoUsuario = usuarioRepository.save(usuario);
-
-        // Converte a entidade para DTO
-        UsuarioDTO novoUsuarioDTO = entityMapper.mapTo(novoUsuario, UsuarioDTO.class);
+        Usuario usuario = cadastrarUsuarioUseCase.cadastrarUsuario(usuarioDTO);
+        UsuarioDTO novoUsuarioDTO = entityMapper.mapTo(usuario, UsuarioDTO.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuarioDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> buscarUsuarioPorId(@PathVariable Long id) {
-
-        // Busca o usuário
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + id));
-
-        // Converte a entidade para DTO
+        Usuario usuario = buscarUsuarioUseCase.buscarUsuarioPorId(id);
         UsuarioDTO usuarioDTO = entityMapper.mapTo(usuario, UsuarioDTO.class);
-
         return ResponseEntity.ok(usuarioDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> atualizarUsuario(
-            @PathVariable Long id,
-            @Valid @RequestBody UsuarioDTO usuarioDTO) {
-
-        // Verifica se o usuário existe
-        usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + id));
-
-        // Converte DTO para entidade de domínio
-        Usuario usuario = entityMapper.mapTo(usuarioDTO, Usuario.class);
-        usuario.setId(id);
-
-        // Atualiza o usuário
-        Usuario usuarioAtualizado = usuarioRepository.save(usuario);
-
-        // Converte a entidade para DTO
-        UsuarioDTO usuarioAtualizadoDTO = entityMapper.mapTo(usuarioAtualizado, UsuarioDTO.class);
-
+    public ResponseEntity<UsuarioDTO> atualizarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioDTO usuarioDTO) {
+        Usuario usuario = atualizarUsuarioUseCase.atualizarUsuario(id, usuarioDTO);
+        UsuarioDTO usuarioAtualizadoDTO = entityMapper.mapTo(usuario, UsuarioDTO.class);
         return ResponseEntity.ok(usuarioAtualizadoDTO);
     }
 }

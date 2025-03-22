@@ -24,7 +24,6 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
                 .email(usuario.getEmail())
                 .senha(usuario.getSenha())
                 .telefone(usuario.getTelefone())
-                .isRestaurante(usuario.isRestaurante())
                 .build();
         return jpaUsuarioRepository.save(data).toDomain();
     }
