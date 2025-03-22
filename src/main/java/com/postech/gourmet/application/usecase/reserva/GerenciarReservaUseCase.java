@@ -1,4 +1,4 @@
-package com.postech.gourmet.application.usecase;
+package com.postech.gourmet.application.usecase.reserva;
 
 import com.postech.gourmet.domain.entities.Reserva;
 import com.postech.gourmet.domain.entities.Restaurante;

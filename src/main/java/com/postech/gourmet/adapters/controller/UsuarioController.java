@@ -2,13 +2,10 @@ package com.postech.gourmet.adapters.controller;
 
 import com.postech.gourmet.adapters.dto.UsuarioDTO;
 import com.postech.gourmet.adapters.mapper.EntityMapper;
-import com.postech.gourmet.application.usecase.CadastroRestauranteUseCase;
 import com.postech.gourmet.application.usecase.usuario.AtualizarUsuarioUseCase;
 import com.postech.gourmet.application.usecase.usuario.BuscarUsuarioUseCase;
 import com.postech.gourmet.application.usecase.usuario.CadastrarUsuarioUseCase;
 import com.postech.gourmet.domain.entities.Usuario;
-import com.postech.gourmet.domain.exception.DuplicateResourceException;
-import com.postech.gourmet.domain.exception.ResourceNotFoundException;
 import com.postech.gourmet.domain.repositories.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

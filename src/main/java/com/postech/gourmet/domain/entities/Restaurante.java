@@ -13,6 +13,7 @@ public class Restaurante {
     private String endereco;
     private String telefone;
     private String tipoCozinha;
+    private Integer capacidade;
     private Map<DayOfWeek, HorarioFuncionamento> horariosFuncionamento;
     private List<Mesa> mesas;
     private List<Avaliacao> avaliacoes;
@@ -41,11 +42,12 @@ public class Restaurante {
         this.horariosFuncionamento = new HashMap<>();
     }
 
-    public Restaurante(Long id, String nome, String endereco, String telefone, List<Mesa> mesas, List<Avaliacao> avaliacoes) {
+    public Restaurante(Long id, String nome, String endereco, String telefone,Integer capacidade, List<Mesa> mesas, List<Avaliacao> avaliacoes) {
         this.id = id;
         this.nome = nome;
         this.endereco = endereco;
         this.telefone = telefone;
+        this.capacidade = capacidade;
         this.mesas = mesas != null ? mesas : new ArrayList<>();
         this.avaliacoes = avaliacoes != null ? avaliacoes : new ArrayList<>();
         this.horariosFuncionamento = new HashMap<>();
@@ -81,6 +83,14 @@ public class Restaurante {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public Integer getCapacidade() {
+        return capacidade;
+    }
+
+    public void setCapacidade(Integer capacidade) {
+        this.capacidade = capacidade;
     }
 
     public List<Mesa> getMesas() {

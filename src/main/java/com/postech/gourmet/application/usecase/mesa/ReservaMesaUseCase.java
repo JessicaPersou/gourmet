@@ -1,5 +1,6 @@
-package com.postech.gourmet.application.usecase;
+package com.postech.gourmet.application.usecase.mesa;
 
+import com.postech.gourmet.adapters.dto.ReservaDTO;
 import com.postech.gourmet.domain.entities.Mesa;
 import com.postech.gourmet.domain.entities.Reserva;
 import com.postech.gourmet.domain.entities.Restaurante;
@@ -36,83 +37,63 @@ public class ReservaMesaUseCase {
         this.usuarioRepository = usuarioRepository;
     }
 
-    /**
-     * Realiza a reserva de uma mesa específica
-     *
-     * @param mesaId ID da mesa
-     * @param usuarioId ID do usuário que está fazendo a reserva
-     * @param dataHora Data e hora desejadas para a reserva
-     * @return Reserva criada
-     */
     @Transactional
-    public Reserva reservarMesa(Long mesaId, Long usuarioId, LocalDateTime dataHora) {
-        // Validações
-        if (dataHora == null) {
+    public Reserva reserva (ReservaDTO reservaDTO) {
+        if (reservaDTO.getDataHora() == null) {
             throw new InvalidRequestException("Data e hora são obrigatórias");
         }
 
-        if (dataHora.isBefore(LocalDateTime.now())) {
+        if (reservaDTO.getDataHora().isBefore(LocalDateTime.now())) {
             throw new InvalidRequestException("Não é possível fazer reservas para datas passadas");
         }
 
-        // Busca mesa, usuário e restaurante
-        Mesa mesa = mesaRepository.findById(mesaId)
-                .orElseThrow(() -> new ResourceNotFoundException("Mesa não encontrada com ID: " + mesaId));
+        Mesa mesa = mesaRepository.findById(reservaDTO.getMesaId())
+                .orElseThrow(() -> new ResourceNotFoundException("Mesa não encontrada com ID: " + reservaDTO.getMesaId()));
 
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + usuarioId));
+        Usuario usuario = usuarioRepository.findById(reservaDTO.getUsuarioId())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + reservaDTO.getUsuarioId()));
 
         Restaurante restaurante = mesa.getRestaurante();
+//      aqui fazer uma logica para ver se a quantidade de pessoas da reserva é menor que a quantidade disponivel no restaurante
+        if (restaurante.getCapacidade() >= 0 && restaurante.getCapacidade() != null) {
+            Integer quantidadPessoas = restaurante.getCapacidade() - reservaDTO.get();
+            restaurante.setCapacidade(quantidadPessoas);
+        }
 
-        // Verifica se o restaurante está aberto na data/hora solicitada
-        DayOfWeek diaSemana = dataHora.getDayOfWeek();
-        if (!restaurante.estaAberto(diaSemana, dataHora.toLocalTime())) {
+        DayOfWeek diaSemana = reservaDTO.getDataHora().getDayOfWeek();
+        if (!restaurante.estaAberto(diaSemana, reservaDTO.getDataHora().toLocalTime())) {
             throw new InvalidRequestException("O restaurante não está aberto nesta data/hora");
         }
 
-        // Verifica se a mesa está disponível na data/hora solicitada
-        if (!mesa.estaDisponivel(dataHora)) {
+        if (!mesa.estaDisponivel(reservaDTO.getDataHora())) {
             throw new InvalidRequestException("Esta mesa não está disponível na data/hora solicitada");
         }
 
-        // Cria a reserva
         Reserva reserva = new Reserva();
         reserva.setMesa(mesa);
         reserva.setUsuario(usuario);
-        reserva.setCliente(usuario.getNome()); // Mantém o nome para compatibilidade
-        reserva.setDataHora(dataHora);
+        reserva.setCliente(usuario.getNome());
+        reserva.setDataHora(reservaDTO.getDataHora());
         reserva.setStatus(Reserva.StatusReserva.PENDENTE);
 
-        // Salva a reserva
         Reserva reservaSalva = reservaRepository.save(reserva);
 
-        // Adiciona a reserva à mesa
         mesa.adicionarReserva(reservaSalva);
         mesaRepository.save(mesa);
 
         return reservaSalva;
     }
 
-    /**
-     * Busca mesas disponíveis em um restaurante específico para uma data e hora
-     *
-     * @param restauranteId ID do restaurante
-     * @param dataHora Data e hora desejadas
-     * @param capacidade Capacidade mínima desejada (opcional)
-     * @return Lista de mesas disponíveis
-     */
+    @Transactional
     public List<Mesa> buscarMesasDisponiveis(Long restauranteId, LocalDateTime dataHora, Integer capacidade) {
-        // Busca o restaurante
         Restaurante restaurante = restauranteRepository.findById(restauranteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurante não encontrado com ID: " + restauranteId));
 
-        // Verifica se o restaurante está aberto na data/hora solicitada
         DayOfWeek diaSemana = dataHora.getDayOfWeek();
         if (!restaurante.estaAberto(diaSemana, dataHora.toLocalTime())) {
             throw new InvalidRequestException("O restaurante não está aberto nesta data/hora");
         }
 
-        // Filtra as mesas disponíveis
         return restaurante.getMesas().stream()
                 .filter(mesa -> mesa.estaDisponivel(dataHora))
                 .filter(mesa -> capacidade == null || mesa.getCapacidade() >= capacidade)

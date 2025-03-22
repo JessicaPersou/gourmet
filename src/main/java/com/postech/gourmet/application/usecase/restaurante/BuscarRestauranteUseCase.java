@@ -1,4 +1,4 @@
-package com.postech.gourmet.application.usecase;
+package com.postech.gourmet.application.usecase.restaurante;
 
 import com.postech.gourmet.domain.entities.Restaurante;
 import com.postech.gourmet.domain.exception.ResourceNotFoundException;
@@ -6,7 +6,6 @@ import com.postech.gourmet.domain.repositories.RestauranteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BuscarRestauranteUseCase {

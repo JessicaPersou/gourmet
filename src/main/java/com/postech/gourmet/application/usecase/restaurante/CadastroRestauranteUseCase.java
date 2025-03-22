@@ -1,10 +1,9 @@
-package com.postech.gourmet.application.usecase;
+package com.postech.gourmet.application.usecase.restaurante;
 
 import com.postech.gourmet.adapters.dto.HorarioFuncionamentoDTO;
 import com.postech.gourmet.adapters.dto.RestauranteDTO;
 import com.postech.gourmet.domain.entities.Mesa;
 import com.postech.gourmet.domain.entities.Restaurante;
-import com.postech.gourmet.domain.entities.Usuario;
 import com.postech.gourmet.domain.exception.DuplicateResourceException;
 import com.postech.gourmet.domain.exception.InvalidRequestException;
 import com.postech.gourmet.domain.exception.ResourceNotFoundException;
@@ -39,6 +38,8 @@ public class CadastroRestauranteUseCase {
         restaurante.setEndereco(restauranteDTO.getEndereco());
         restaurante.setTelefone(restauranteDTO.getTelefone());
         restaurante.setTipoCozinha(restauranteDTO.getTipoCozinha());
+        restaurante.setCapacidade(restauranteDTO.getCapacidade());
+
 
         Map<DayOfWeek, Restaurante.HorarioFuncionamento> horarios = new HashMap<>();
         for (Map.Entry<DayOfWeek, HorarioFuncionamentoDTO> entry :
@@ -119,6 +120,10 @@ public class CadastroRestauranteUseCase {
 
         if (restauranteDTO.getTipoCozinha() != null) {
             restaurante.setTipoCozinha(restauranteDTO.getTipoCozinha());
+        }
+
+        if (restauranteDTO.getCapacidade() != null && restauranteDTO.getCapacidade() > 0) {
+            restaurante.setCapacidade(restauranteDTO.getCapacidade());
         }
 
         if (restauranteDTO.getHorariosFuncionamento() != null && !restauranteDTO.getHorariosFuncionamento().isEmpty()) {

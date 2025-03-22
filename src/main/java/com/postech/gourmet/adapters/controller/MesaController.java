@@ -2,9 +2,8 @@ package com.postech.gourmet.adapters.controller;
 
 import com.postech.gourmet.adapters.dto.MesaDTO;
 import com.postech.gourmet.adapters.mapper.EntityMapper;
-import com.postech.gourmet.application.usecase.ReservaMesaUseCase;
+import com.postech.gourmet.application.usecase.mesa.ReservaMesaUseCase;
 import com.postech.gourmet.domain.entities.Mesa;
-import com.postech.gourmet.gateways.ReservaRepositoryImpl;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;

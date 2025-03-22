@@ -50,7 +50,6 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     @Override
     public List<Restaurante> findByNomeContainingOrEnderecoContainingOrTipoCozinhaContaining(
             String nome, String endereco, String tipoCozinha) {
-        // Usamos o mesmo termo para os três campos
         return jpaRestauranteRepository.findByNomeContainingOrEnderecoContainingOrTipoCozinhaContaining(nome)
                 .stream()
                 .map(RestauranteData::toDomain)
@@ -77,9 +76,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
         data.setEndereco(restaurante.getEndereco());
         data.setTelefone(restaurante.getTelefone());
         data.setTipoCozinha(restaurante.getTipoCozinha());
-
-        // Não convertemos mesas e avaliações aqui para evitar referências circulares
-        // Elas serão carregadas sob demanda pelos métodos específicos
+        data.setCapacidade(restaurante.getCapacidade());
 
         return data;
     }

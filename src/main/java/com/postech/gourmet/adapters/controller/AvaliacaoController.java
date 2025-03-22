@@ -2,7 +2,7 @@ package com.postech.gourmet.adapters.controller;
 
 import com.postech.gourmet.adapters.dto.AvaliacaoDTO;
 import com.postech.gourmet.adapters.mapper.EntityMapper;
-import com.postech.gourmet.application.usecase.AvaliarRestauranteUseCase;
+import com.postech.gourmet.application.usecase.restaurante.AvaliarRestauranteUseCase;
 import com.postech.gourmet.domain.entities.Avaliacao;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

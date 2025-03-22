@@ -26,6 +26,8 @@ public class RestauranteDTO {
 
     private String tipoCozinha;
 
+    private Integer capacidade;
+
     private Map<DayOfWeek, HorarioFuncionamentoDTO> horariosFuncionamento = new HashMap<>();
 
     private List<MesaDTO> mesas = new ArrayList<>();
@@ -64,6 +66,14 @@ public class RestauranteDTO {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public Integer getCapacidade() {
+        return capacidade;
+    }
+
+    public void setCapacidade(Integer capacidade) {
+        this.capacidade = capacidade;
     }
 
     public List<MesaDTO> getMesas() {

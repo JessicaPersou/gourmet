@@ -32,7 +32,7 @@ public class RestauranteData {
     private String endereco;
     private String telefone;
     private String tipoCozinha;
-    private Integer capacidade; // Campo adicionado para compatibilidade com DTO
+    private Integer capacidade;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MesaData> mesas = new ArrayList<>();
@@ -43,9 +43,6 @@ public class RestauranteData {
     @Column(columnDefinition = "TEXT")
     private String horariosFuncionamentoJson;
 
-    /**
-     * Converte entidade de dados para objeto de domínio
-     */
     public Restaurante toDomain() {
         Restaurante restaurante = new Restaurante();
         restaurante.setId(this.id);
@@ -53,19 +50,16 @@ public class RestauranteData {
         restaurante.setEndereco(this.endereco);
         restaurante.setTelefone(this.telefone);
         restaurante.setTipoCozinha(this.tipoCozinha);
+        restaurante.setCapacidade(this.capacidade);
 
-        // Para evitar referências circulares, não carregamos dados complexos
-        // As listas serão carregadas sob demanda pelos repositórios específicos
         restaurante.setMesas(new ArrayList<>());
         restaurante.setAvaliacoes(new ArrayList<>());
 
-        // Converter horários de funcionamento do JSON para o mapa
         if (this.horariosFuncionamentoJson != null && !this.horariosFuncionamentoJson.isEmpty()) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.registerModule(new JavaTimeModule());
 
-                // Converter o JSON para um mapa temporário com strings e depois construir o mapa real
                 Map<String, Map<String, String>> tempMap = mapper.readValue(
                         this.horariosFuncionamentoJson,
                         new TypeReference<Map<String, Map<String, String>>>() {}
@@ -85,7 +79,6 @@ public class RestauranteData {
 
                 restaurante.setHorariosFuncionamento(horarios);
             } catch (Exception e) {
-                // Log do erro e mantém o mapa vazio
                 System.err.println("Erro ao converter horários: " + e.getMessage());
                 restaurante.setHorariosFuncionamento(new HashMap<>());
             }
