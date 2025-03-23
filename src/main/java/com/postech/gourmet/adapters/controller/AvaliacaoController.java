@@ -5,7 +5,6 @@ import com.postech.gourmet.adapters.mapper.EntityMapper;
 import com.postech.gourmet.application.usecase.restaurante.AvaliarRestauranteUseCase;
 import com.postech.gourmet.domain.entities.Avaliacao;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

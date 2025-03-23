@@ -18,8 +18,8 @@ public class OpenApiConfig {
                         .description("API para gerenciamento de restaurantes, reservas e avaliações")
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("Equipe de Desenvolvimento")
-                                .email("contato@gourmet.com"))
+                                .name("Jessica Sousa")
+                                .email("jessica.persou@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://www.apache.org/licenses/LICENSE-2.0")));
