@@ -1,15 +1,7 @@
 package com.postech.gourmet.adapters.mapper;
 
-import com.postech.gourmet.adapters.dto.AvaliacaoDTO;
-import com.postech.gourmet.adapters.dto.HorarioFuncionamentoDTO;
-import com.postech.gourmet.adapters.dto.ReservaDTO;
-import com.postech.gourmet.adapters.dto.RestauranteDTO;
-import com.postech.gourmet.adapters.dto.UsuarioDTO;
-import com.postech.gourmet.domain.entities.Avaliacao;
-import com.postech.gourmet.domain.entities.HorarioFuncionamento;
-import com.postech.gourmet.domain.entities.Reserva;
-import com.postech.gourmet.domain.entities.Restaurante;
-import com.postech.gourmet.domain.entities.Usuario;
+import com.postech.gourmet.adapters.dto.*;
+import com.postech.gourmet.domain.entities.*;
 import com.postech.gourmet.domain.enums.StatusReserva;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,10 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")

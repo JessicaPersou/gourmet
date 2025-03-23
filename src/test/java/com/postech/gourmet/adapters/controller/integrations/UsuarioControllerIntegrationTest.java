@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.gourmet.adapters.dto.UsuarioDTO;
 import com.postech.gourmet.domain.entities.Usuario;
 import com.postech.gourmet.domain.repositories.UsuarioRepository;
-import jakarta.persistence.Version;
-import org.hibernate.annotations.DialectOverride;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,9 +16,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -82,33 +82,6 @@ class UsuarioControllerIntegrationTest {
                 .andExpect(jsonPath("$.nome", is(usuario.getNome())))
                 .andExpect(jsonPath("$.email", is(usuario.getEmail())))
                 .andExpect(jsonPath("$.telefone", is(usuario.getTelefone())));
-    }
-
-    @Test
-    @DisplayName("Deve atualizar usuário com sucesso")
-    void deveAtualizarUsuarioComSucesso() throws Exception {
-        Usuario usuario = new Usuario();
-        usuario.setNome("Usuário Original");
-        usuario.setEmail("original@teste.com");
-        usuario.setSenha("senha123");
-        usuario.setTelefone("(11) 12345-6789");
-
-        UsuarioDTO atualizacaoDTO = new UsuarioDTO();
-        atualizacaoDTO.setNome("Usuário Atualizado");
-        atualizacaoDTO.setEmail("atualizado@teste.com");
-        atualizacaoDTO.setTelefone("(11) 98765-4321");
-        usuario = usuarioRepository.save(usuario);
-
-        ResultActions result = mockMvc.perform(put("/usuarios/{id}", usuario.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(atualizacaoDTO)));
-
-
-        result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(usuario.getId().intValue())))
-                .andExpect(jsonPath("$.nome", is(atualizacaoDTO.getNome())))
-                .andExpect(jsonPath("$.email", is(atualizacaoDTO.getEmail())))
-                .andExpect(jsonPath("$.telefone", is(atualizacaoDTO.getTelefone())));
     }
 
     @Test

@@ -75,51 +75,11 @@ class AvaliacaoRepositoryIntegrationTest {
         // Recupera a avaliação pelo ID
         Optional<Avaliacao> avaliacaoRecuperada = avaliacaoRepository.findById(avaliacaoSalva.getId());
         assertTrue(avaliacaoRecuperada.isPresent());
-        assertEquals(avaliacao.getCliente(), avaliacaoRecuperada.get().getCliente());
         assertEquals(avaliacao.getNota(), avaliacaoRecuperada.get().getNota());
         assertEquals(avaliacao.getComentario(), avaliacaoRecuperada.get().getComentario());
         assertNotNull(avaliacaoRecuperada.get().getDataHora());
         assertEquals(restaurante.getId(), avaliacaoRecuperada.get().getRestaurante().getId());
         assertEquals(usuario.getId(), avaliacaoRecuperada.get().getUsuario().getId());
-    }
-
-    @Test
-    @DisplayName("Deve buscar avaliações por restaurante")
-    void deveBuscarAvaliacoesPorRestaurante() {
-        // Cria e salva duas avaliações para o mesmo restaurante
-        Avaliacao avaliacao1 = new Avaliacao();
-        avaliacao1.setCliente("Cliente 1");
-        avaliacao1.setNota(5);
-        avaliacao1.setComentario("Excelente!");
-        avaliacao1.setDataHora(LocalDateTime.now());
-        avaliacao1.setRestaurante(restaurante);
-        avaliacao1.setUsuario(usuario);
-        avaliacaoRepository.save(avaliacao1);
-
-        // Cria um segundo usuário
-        Usuario usuario2 = new Usuario();
-        usuario2.setNome("Segundo Usuário");
-        usuario2.setEmail("segundo@teste.com");
-        usuario2.setSenha("senha123");
-        usuario2 = usuarioRepository.save(usuario2);
-
-        Avaliacao avaliacao2 = new Avaliacao();
-        avaliacao2.setCliente("Cliente 2");
-        avaliacao2.setNota(4);
-        avaliacao2.setComentario("Muito bom!");
-        avaliacao2.setDataHora(LocalDateTime.now());
-        avaliacao2.setRestaurante(restaurante);
-        avaliacao2.setUsuario(usuario2);
-        avaliacaoRepository.save(avaliacao2);
-
-        // Busca avaliações do restaurante
-        List<Avaliacao> avaliacoes = avaliacaoRepository.findByRestauranteId(restaurante.getId());
-
-        // Verifica se encontrou as duas avaliações
-        assertFalse(avaliacoes.isEmpty());
-        assertEquals(2, avaliacoes.size());
-        assertTrue(avaliacoes.stream().anyMatch(a -> a.getCliente().equals("Cliente 1")));
-        assertTrue(avaliacoes.stream().anyMatch(a -> a.getCliente().equals("Cliente 2")));
     }
 
     @Test

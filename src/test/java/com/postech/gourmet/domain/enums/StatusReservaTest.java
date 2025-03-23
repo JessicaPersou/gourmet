@@ -14,7 +14,7 @@ class StatusReservaTest {
 
         assertEquals(4, statusValues.length);
         assertArrayEquals(
-                new StatusReserva[] {
+                new StatusReserva[]{
                         StatusReserva.PENDENTE,
                         StatusReserva.CONFIRMADA,
                         StatusReserva.CANCELADA,

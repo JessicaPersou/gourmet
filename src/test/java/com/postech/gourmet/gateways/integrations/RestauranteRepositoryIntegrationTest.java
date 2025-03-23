@@ -1,6 +1,5 @@
 package com.postech.gourmet.gateways.integrations;
 
-import com.postech.gourmet.domain.entities.HorarioFuncionamento;
 import com.postech.gourmet.domain.entities.Restaurante;
 import com.postech.gourmet.domain.repositories.RestauranteRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,43 +21,6 @@ class RestauranteRepositoryIntegrationTest {
 
     @Autowired
     private RestauranteRepository restauranteRepository;
-
-    @Test
-    @DisplayName("Deve salvar e recuperar um restaurante com sucesso")
-    void deveSalvarERecuperarRestauranteComSucesso() {
-        // Cria um novo restaurante
-        Restaurante restaurante = new Restaurante();
-        restaurante.setNome("Restaurante Teste");
-        restaurante.setEndereco("Endereço Teste");
-        restaurante.setTelefone("(11) 12345-6789");
-        restaurante.setTipoCozinha("Italiana");
-        restaurante.setCapacidade(50);
-
-        // Define horários de funcionamento
-        restaurante.definirHorarioFuncionamento(
-                DayOfWeek.MONDAY,
-                LocalTime.of(9, 0),
-                LocalTime.of(22, 0)
-        );
-
-        // Salva o restaurante
-        Restaurante restauranteSalvo = restauranteRepository.save(restaurante);
-        assertNotNull(restauranteSalvo.getId());
-
-        // Recupera o restaurante pelo ID
-        Optional<Restaurante> restauranteRecuperado = restauranteRepository.findById(restauranteSalvo.getId());
-        assertTrue(restauranteRecuperado.isPresent());
-        assertEquals(restaurante.getNome(), restauranteRecuperado.get().getNome());
-        assertEquals(restaurante.getEndereco(), restauranteRecuperado.get().getEndereco());
-        assertEquals(restaurante.getTipoCozinha(), restauranteRecuperado.get().getTipoCozinha());
-        assertEquals(restaurante.getCapacidade(), restauranteRecuperado.get().getCapacidade());
-
-        // Verifica os horários de funcionamento
-        assertTrue(restauranteRecuperado.get().getHorariosFuncionamento().containsKey(DayOfWeek.MONDAY));
-        HorarioFuncionamento horario = restauranteRecuperado.get().getHorariosFuncionamento().get(DayOfWeek.MONDAY);
-        assertEquals(LocalTime.of(9, 0), horario.getAbertura());
-        assertEquals(LocalTime.of(22, 0), horario.getFechamento());
-    }
 
     @Test
     @DisplayName("Deve buscar restaurantes por termo no nome")

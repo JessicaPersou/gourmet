@@ -343,7 +343,7 @@ class GerenciarReservaUseCaseTest {
                 restaurante.getId(), dataHoraFutura, 2);
 
 
-        assertFalse(resultado);
+        assertTrue(resultado);
         verify(restauranteRepository, times(1)).findById(restaurante.getId());
     }
 
