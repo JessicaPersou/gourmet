@@ -29,18 +29,7 @@ public class AvaliacaoController {
 
     @PostMapping
     public ResponseEntity<AvaliacaoDTO> avaliarRestaurante(@Valid @RequestBody AvaliacaoDTO avaliacaoDTO) {
-
-        // Extrai os dados necessários do DTO
-        Long restauranteId = avaliacaoDTO.getRestauranteId();
-        Long usuarioId = avaliacaoDTO.getUsuarioId();
-        int nota = avaliacaoDTO.getNota();
-        String comentario = avaliacaoDTO.getComentario();
-
-        // Executa o caso de uso
-        Avaliacao avaliacao = avaliarRestauranteUseCase.avaliarRestaurante(
-                restauranteId, usuarioId, nota, comentario);
-
-        // Converte a entidade para DTO
+        Avaliacao avaliacao = avaliarRestauranteUseCase.avaliarRestaurante(avaliacaoDTO);
         AvaliacaoDTO novaAvaliacaoDTO = entityMapper.mapTo(avaliacao, AvaliacaoDTO.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novaAvaliacaoDTO);
@@ -48,11 +37,7 @@ public class AvaliacaoController {
 
     @GetMapping("/restaurante/{restauranteId}")
     public ResponseEntity<List<AvaliacaoDTO>> buscarAvaliacoesPorRestaurante(@PathVariable Long restauranteId) {
-
-        // Executa o caso de uso
         List<Avaliacao> avaliacoes = avaliarRestauranteUseCase.buscarAvaliacoesPorRestaurante(restauranteId);
-
-        // Converte a lista de entidades para lista de DTOs
         List<AvaliacaoDTO> avaliacoesDTOs = entityMapper.mapToList(avaliacoes, AvaliacaoDTO.class);
 
         return ResponseEntity.ok(avaliacoesDTOs);
@@ -60,11 +45,7 @@ public class AvaliacaoController {
 
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<AvaliacaoDTO>> buscarAvaliacoesPorUsuario(@PathVariable Long usuarioId) {
-
-        // Executa o caso de uso
         List<Avaliacao> avaliacoes = avaliarRestauranteUseCase.buscarAvaliacoesPorUsuario(usuarioId);
-
-        // Converte a lista de entidades para lista de DTOs
         List<AvaliacaoDTO> avaliacoesDTOs = entityMapper.mapToList(avaliacoes, AvaliacaoDTO.class);
 
         return ResponseEntity.ok(avaliacoesDTOs);

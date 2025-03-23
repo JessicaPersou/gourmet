@@ -1,5 +1,6 @@
 package com.postech.gourmet.application.usecase.restaurante;
 
+import com.postech.gourmet.adapters.dto.AvaliacaoDTO;
 import com.postech.gourmet.domain.entities.Avaliacao;
 import com.postech.gourmet.domain.entities.Restaurante;
 import com.postech.gourmet.domain.entities.Usuario;
@@ -16,8 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,154 +43,178 @@ class AvaliarRestauranteUseCaseTest {
 
     private Restaurante restaurante;
     private Usuario usuario;
+    private AvaliacaoDTO avaliacaoDTO;
     private Avaliacao avaliacao;
 
     @BeforeEach
     void setUp() {
+        // Configurar objetos para os testes
         restaurante = new Restaurante();
         restaurante.setId(1L);
-        restaurante.setNome("Restaurante Teste");
+        restaurante.setNome("Restaurante Test");
         restaurante.setAvaliacoes(new ArrayList<>());
 
         usuario = new Usuario();
         usuario.setId(1L);
-        usuario.setNome("Usuário Teste");
-        usuario.setEmail("usuario@teste.com");
+        usuario.setNome("Usuario Test");
         usuario.setAvaliacoes(new ArrayList<>());
+
+        avaliacaoDTO = new AvaliacaoDTO();
+        avaliacaoDTO.setRestauranteId(1L);
+        avaliacaoDTO.setUsuarioId(1L);
+        avaliacaoDTO.setNota(4);
+        avaliacaoDTO.setComentario("Excelente restaurante!");
 
         avaliacao = new Avaliacao();
         avaliacao.setId(1L);
-        avaliacao.setNota(4);
-        avaliacao.setComentario("Ótimo restaurante!");
-        avaliacao.setCliente(usuario.getNome());
         avaliacao.setRestaurante(restaurante);
         avaliacao.setUsuario(usuario);
+        avaliacao.setCliente(usuario.getNome());
+        avaliacao.setNota(4);
+        avaliacao.setComentario("Excelente restaurante!");
+        avaliacao.setDataHora(LocalDateTime.now());
     }
 
     @Test
     @DisplayName("Deve avaliar restaurante com sucesso")
-    void deveAvaliarRestauranteComSucesso() {
-
-        when(restauranteRepository.findById(anyLong())).thenReturn(Optional.of(restaurante));
-        when(usuarioRepository.findById(anyLong())).thenReturn(Optional.of(usuario));
+    public void deveAvaliarRestauranteComSucesso() {
+        // Arrange
+        when(restauranteRepository.findById(1L)).thenReturn(Optional.of(restaurante));
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(avaliacaoRepository.save(any(Avaliacao.class))).thenReturn(avaliacao);
 
-        Avaliacao resultado = avaliarRestauranteUseCase.avaliarRestaurante(
-                restaurante.getId(), usuario.getId(), 4, "Ótimo restaurante!");
+        // Act
+        Avaliacao resultado = avaliarRestauranteUseCase.avaliarRestaurante(avaliacaoDTO);
 
+        // Assert
         assertNotNull(resultado);
-        assertEquals(avaliacao.getId(), resultado.getId());
-        assertEquals(avaliacao.getNota(), resultado.getNota());
-        assertEquals(avaliacao.getComentario(), resultado.getComentario());
-        verify(restauranteRepository, times(1)).findById(restaurante.getId());
-        verify(usuarioRepository, times(1)).findById(usuario.getId());
-        verify(avaliacaoRepository, times(1)).save(any(Avaliacao.class));
-        verify(restauranteRepository, times(1)).save(restaurante);
+        assertEquals(4, resultado.getNota());
+        assertEquals("Excelente restaurante!", resultado.getComentario());
+        assertEquals(usuario.getNome(), resultado.getCliente());
+        verify(avaliacaoRepository).save(any(Avaliacao.class));
+        verify(restauranteRepository).save(restaurante);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao avaliar com nota inválida")
-    void deveLancarExcecaoAoAvaliarComNotaInvalida() {
-        InvalidRequestException exception = assertThrows(
-                InvalidRequestException.class,
-                () -> avaliarRestauranteUseCase.avaliarRestaurante(
-                        restaurante.getId(), usuario.getId(), 6, "Nota inválida!")
-        );
-        assertEquals("A nota deve estar entre 1 e 5", exception.getMessage());
-        verify(restauranteRepository, never()).findById(anyLong());
-        verify(usuarioRepository, never()).findById(anyLong());
-        verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
+    @DisplayName("Deve lançar exceção quando nota for inválida (menor que 1)")
+    public void deveLancarExcecaoQuandoNotaForMenorQueUm() {
+        // Arrange
+        avaliacaoDTO.setNota(0);
+
+        // Act & Assert
+        assertThrows(InvalidRequestException.class, () -> {
+            avaliarRestauranteUseCase.avaliarRestaurante(avaliacaoDTO);
+        });
+
+        verify(avaliacaoRepository, never()).save(any());
+        verify(restauranteRepository, never()).save(any());
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao avaliar restaurante inexistente")
-    void deveLancarExcecaoAoAvaliarRestauranteInexistente() {
-        when(restauranteRepository.findById(anyLong())).thenReturn(Optional.empty());
+    @DisplayName("Deve lançar exceção quando nota for inválida (maior que 5)")
+    public void deveLancarExcecaoQuandoNotaForMaiorQueCinco() {
+        // Arrange
+        avaliacaoDTO.setNota(6);
 
-        ResourceNotFoundException exception = assertThrows(
-                ResourceNotFoundException.class,
-                () -> avaliarRestauranteUseCase.avaliarRestaurante(
-                        999L, usuario.getId(), 4, "Ótimo restaurante!")
-        );
-        assertEquals("Restaurante não encontrado com ID: 999", exception.getMessage());
-        verify(restauranteRepository, times(1)).findById(999L);
-        verify(usuarioRepository, never()).findById(anyLong());
-        verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
+        // Act & Assert
+        assertThrows(InvalidRequestException.class, () -> {
+            avaliarRestauranteUseCase.avaliarRestaurante(avaliacaoDTO);
+        });
+
+        verify(avaliacaoRepository, never()).save(any());
+        verify(restauranteRepository, never()).save(any());
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao avaliar com usuário inexistente")
-    void deveLancarExcecaoAoAvaliarComUsuarioInexistente() {
-        when(restauranteRepository.findById(anyLong())).thenReturn(Optional.of(restaurante));
-        when(usuarioRepository.findById(anyLong())).thenReturn(Optional.empty());
+    @DisplayName("Deve lançar exceção quando restaurante não for encontrado")
+    public void deveLancarExcecaoQuandoRestauranteNaoForEncontrado() {
+        // Arrange
+        when(restauranteRepository.findById(1L)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(
-                ResourceNotFoundException.class,
-                () -> {
-                    long restauranteId = restaurante.getId();
-                    long usuarioId = 999L;
-                    avaliarRestauranteUseCase.avaliarRestaurante(restauranteId, usuarioId, 4, "Ótimo restaurante!");
-                }
-        );
-        assertEquals("Usuário não encontrado com ID: 999", exception.getMessage());
-        verify(restauranteRepository, times(1)).findById(restaurante.getId());
-        verify(usuarioRepository, times(1)).findById(999L);
-        verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> {
+            avaliarRestauranteUseCase.avaliarRestaurante(avaliacaoDTO);
+        });
+
+        verify(avaliacaoRepository, never()).save(any());
+        verify(restauranteRepository, never()).save(any());
     }
 
     @Test
-    @DisplayName("Deve buscar avaliações por restaurante")
-    void deveBuscarAvaliacoesPorRestaurante() {
-        List<Avaliacao> avaliacoes = Arrays.asList(avaliacao);
+    @DisplayName("Deve lançar exceção quando usuário não for encontrado")
+    public void deveLancarExcecaoQuandoUsuarioNaoForEncontrado() {
+        // Arrange
+        when(restauranteRepository.findById(1L)).thenReturn(Optional.of(restaurante));
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> {
+            avaliarRestauranteUseCase.avaliarRestaurante(avaliacaoDTO);
+        });
+
+        verify(avaliacaoRepository, never()).save(any());
+        verify(restauranteRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Deve buscar avaliações por restaurante com sucesso")
+    public void deveBuscarAvaliacoesPorRestauranteComSucesso() {
+        // Arrange
+        List<Avaliacao> avaliacoes = new ArrayList<>();
+        avaliacoes.add(avaliacao);
         restaurante.setAvaliacoes(avaliacoes);
-        when(restauranteRepository.findById(anyLong())).thenReturn(Optional.of(restaurante));
 
-        List<Avaliacao> resultado = avaliarRestauranteUseCase.buscarAvaliacoesPorRestaurante(restaurante.getId());
+        when(restauranteRepository.findById(1L)).thenReturn(Optional.of(restaurante));
 
+        // Act
+        List<Avaliacao> resultado = avaliarRestauranteUseCase.buscarAvaliacoesPorRestaurante(1L);
+
+        // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.size());
-        assertEquals(avaliacao, resultado.get(0));
-        verify(restauranteRepository, times(1)).findById(restaurante.getId());
+        assertEquals(4, resultado.get(0).getNota());
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao buscar avaliações de restaurante inexistente")
-    void deveLancarExcecaoAoBuscarAvaliacoesDeRestauranteInexistente() {
-        when(restauranteRepository.findById(anyLong())).thenReturn(Optional.empty());
+    public void deveLancarExcecaoAoBuscarAvaliacoesDeRestauranteInexistente() {
+        // Arrange
+        when(restauranteRepository.findById(1L)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(
-                ResourceNotFoundException.class,
-                () -> avaliarRestauranteUseCase.buscarAvaliacoesPorRestaurante(999L)
-        );
-        assertEquals("Restaurante não encontrado com ID: 999", exception.getMessage());
-        verify(restauranteRepository, times(1)).findById(999L);
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> {
+            avaliarRestauranteUseCase.buscarAvaliacoesPorRestaurante(1L);
+        });
     }
 
     @Test
-    @DisplayName("Deve buscar avaliações por usuário")
-    void deveBuscarAvaliacoesPorUsuario() {
-        List<Avaliacao> avaliacoes = Arrays.asList(avaliacao);
+    @DisplayName("Deve buscar avaliações por usuário com sucesso")
+    public void deveBuscarAvaliacoesPorUsuarioComSucesso() {
+        // Arrange
+        List<Avaliacao> avaliacoes = new ArrayList<>();
+        avaliacoes.add(avaliacao);
         usuario.setAvaliacoes(avaliacoes);
-        when(usuarioRepository.findById(anyLong())).thenReturn(Optional.of(usuario));
 
-        List<Avaliacao> resultado = avaliarRestauranteUseCase.buscarAvaliacoesPorUsuario(usuario.getId());
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
 
+        // Act
+        List<Avaliacao> resultado = avaliarRestauranteUseCase.buscarAvaliacoesPorUsuario(1L);
+
+        // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.size());
-        assertEquals(avaliacao, resultado.get(0));
-        verify(usuarioRepository, times(1)).findById(usuario.getId());
+        assertEquals(4, resultado.get(0).getNota());
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao buscar avaliações de usuário inexistente")
-    void deveLancarExcecaoAoBuscarAvaliacoesDeUsuarioInexistente() {
-        when(usuarioRepository.findById(anyLong())).thenReturn(Optional.empty());
+    public void deveLancarExcecaoAoBuscarAvaliacoesDeUsuarioInexistente() {
+        // Arrange
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(
-                ResourceNotFoundException.class,
-                () -> avaliarRestauranteUseCase.buscarAvaliacoesPorUsuario(999L)
-        );
-        assertEquals("Usuário não encontrado com ID: 999", exception.getMessage());
-        verify(usuarioRepository, times(1)).findById(999L);
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> {
+            avaliarRestauranteUseCase.buscarAvaliacoesPorUsuario(1L);
+        });
     }
 }

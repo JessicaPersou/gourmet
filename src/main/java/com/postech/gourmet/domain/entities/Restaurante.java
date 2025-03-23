@@ -146,4 +146,5 @@ public class Restaurante {
     public void setReservas(List<Reserva> reservas) {
         this.reservas = reservas;
     }
-}
+
+    }

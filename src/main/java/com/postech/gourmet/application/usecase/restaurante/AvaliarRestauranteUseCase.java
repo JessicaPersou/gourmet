@@ -1,5 +1,6 @@
 package com.postech.gourmet.application.usecase.restaurante;
 
+import com.postech.gourmet.adapters.dto.AvaliacaoDTO;
 import com.postech.gourmet.domain.entities.Avaliacao;
 import com.postech.gourmet.domain.entities.Restaurante;
 import com.postech.gourmet.domain.entities.Usuario;
@@ -30,61 +31,46 @@ public class AvaliarRestauranteUseCase {
     }
 
     @Transactional
-    public Avaliacao avaliarRestaurante(Long restauranteId, Long usuarioId, int nota, String comentario) {
-        // Validação da nota
+    public Avaliacao avaliarRestaurante(AvaliacaoDTO avaliacaoDTO) {
+        Long restauranteId = avaliacaoDTO.getRestauranteId();
+        Long usuarioId = avaliacaoDTO.getUsuarioId();
+        int nota = avaliacaoDTO.getNota();
+        String comentario = avaliacaoDTO.getComentario();
+
         if (nota < 1 || nota > 5) {
             throw new InvalidRequestException("A nota deve estar entre 1 e 5");
         }
 
-        // Busca o restaurante
         Restaurante restaurante = restauranteRepository.findById(restauranteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurante não encontrado com ID: " + restauranteId));
 
-        // Busca o usuário
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + usuarioId));
 
-        // Cria e configura a avaliação
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setRestaurante(restaurante);
         avaliacao.setUsuario(usuario);
-        avaliacao.setCliente(usuario.getNome()); // Mantém o nome para compatibilidade
+        avaliacao.setCliente(usuario.getNome());
         avaliacao.setNota(nota);
         avaliacao.setComentario(comentario);
         avaliacao.setDataHora(LocalDateTime.now());
 
-        // Salva a avaliação
         Avaliacao avaliacaoSalva = avaliacaoRepository.save(avaliacao);
 
-        // Adiciona a avaliação ao restaurante
         restaurante.adicionarAvaliacao(avaliacaoSalva);
         restauranteRepository.save(restaurante);
 
         return avaliacaoSalva;
     }
 
-    /**
-     * Busca avaliações de um restaurante específico
-     *
-     * @param restauranteId ID do restaurante
-     * @return Lista de avaliações do restaurante
-     */
     public List<Avaliacao> buscarAvaliacoesPorRestaurante(Long restauranteId) {
-        // Busca o restaurante
         Restaurante restaurante = restauranteRepository.findById(restauranteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurante não encontrado com ID: " + restauranteId));
 
         return restaurante.getAvaliacoes();
     }
 
-    /**
-     * Busca avaliações feitas por um usuário específico
-     *
-     * @param usuarioId ID do usuário
-     * @return Lista de avaliações do usuário
-     */
     public List<Avaliacao> buscarAvaliacoesPorUsuario(Long usuarioId) {
-        // Busca o usuário
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + usuarioId));
 

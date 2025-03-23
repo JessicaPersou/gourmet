@@ -70,18 +70,14 @@ class AvaliacaoControllerTest {
 
     @Test
     void testAvaliarRestaurante() {
-        when(avaliarRestauranteUseCase.avaliarRestaurante(anyLong(), anyLong(), anyInt(), anyString())).thenReturn(avaliacao);
+        when(avaliarRestauranteUseCase.avaliarRestaurante(avaliacaoDTO)).thenReturn(avaliacao);
         when(entityMapper.mapTo(any(Avaliacao.class), eq(AvaliacaoDTO.class))).thenReturn(avaliacaoDTO);
 
         ResponseEntity<AvaliacaoDTO> response = avaliacaoController.avaliarRestaurante(avaliacaoDTO);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(avaliacaoDTO, response.getBody());
-        verify(avaliarRestauranteUseCase).avaliarRestaurante(
-                avaliacaoDTO.getRestauranteId(),
-                avaliacaoDTO.getUsuarioId(),
-                avaliacaoDTO.getNota(),
-                avaliacaoDTO.getComentario());
+        verify(avaliarRestauranteUseCase).avaliarRestaurante(avaliacaoDTO);
         verify(entityMapper).mapTo(avaliacao, AvaliacaoDTO.class);
     }
 
