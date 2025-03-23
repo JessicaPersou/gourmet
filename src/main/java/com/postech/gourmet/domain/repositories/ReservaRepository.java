@@ -13,6 +13,7 @@ public interface ReservaRepository {
     List<Reserva> findAll();
 
     boolean existsById(Long id);
+
     void deleteById(Long id);
 
     List<Reserva> findByUsuarioId(Long usuarioId);

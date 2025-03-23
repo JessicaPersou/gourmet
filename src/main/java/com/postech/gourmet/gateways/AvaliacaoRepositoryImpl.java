@@ -54,7 +54,7 @@ public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
     private AvaliacaoData convertToData(Avaliacao avaliacao) {
         AvaliacaoData data = new AvaliacaoData();
         data.setId(avaliacao.getId());
-        data.setUsuario(avaliacao.getUsuario());
+//        data.setUsuario(avaliacao.getUsuario());
         data.setNota(avaliacao.getNota());
         data.setComentario(avaliacao.getComentario());
         data.setDataHora(avaliacao.getDataHora());

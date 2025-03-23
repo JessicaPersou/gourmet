@@ -50,14 +50,6 @@ public class ReservaController {
         return ResponseEntity.ok(reservaDTOs);
     }
 
-    @GetMapping("/restaurante/{restauranteId}")
-    public ResponseEntity<List<ReservaDTO>> listarReservasPorRestaurante(@PathVariable Long restauranteId) {
-        List<Reserva> reservas = gerenciarReservaUseCase.listarReservasPorRestaurante(restauranteId);
-        List<ReservaDTO> reservaDTOs = entityMapper.mapToList(reservas, ReservaDTO.class);
-
-        return ResponseEntity.ok(reservaDTOs);
-    }
-
     @DeleteMapping("/{reservaId}")
     public ResponseEntity<Void> cancelarReserva(
             @PathVariable Long reservaId,
