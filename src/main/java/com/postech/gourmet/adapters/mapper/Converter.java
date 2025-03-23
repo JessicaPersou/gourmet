@@ -10,12 +10,13 @@ import com.postech.gourmet.domain.entities.Reserva;
 import com.postech.gourmet.domain.entities.Restaurante;
 
 import java.time.DayOfWeek;
-import java.util.HashMap;
-import java.util.List;
+import java.util.EnumMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Converter {
+
+    private Converter() {
+    }
 
     public static RestauranteDTO toRestauranteDTO(Restaurante restaurante) {
         RestauranteDTO dto = new RestauranteDTO();
@@ -29,12 +30,12 @@ public class Converter {
         if (restaurante.getReservas() != null) {
             dto.setReservas(restaurante.getReservas().stream()
                     .map(Converter::toReservaDTO)
-                    .collect(Collectors.toList()));
+                    .toList());
         }
         if (restaurante.getAvaliacoes() != null) {
             dto.setAvaliacoes(restaurante.getAvaliacoes().stream()
                     .map(Converter::toAvaliacaoDTO)
-                    .collect(Collectors.toList()));
+                    .toList());
         }
         dto.setMediaAvaliacoes(restaurante.calcularMediaAvaliacoes());
         return dto;
@@ -50,7 +51,7 @@ public class Converter {
         restaurante.setCapacidade(dto.getCapacidade());
 
         if (dto.getHorariosFuncionamento() != null) {
-            Map<DayOfWeek, HorarioFuncionamento> horarios = new HashMap<>();
+            Map<DayOfWeek, HorarioFuncionamento> horarios = new EnumMap<>(DayOfWeek.class);
 
             for (Map.Entry<DayOfWeek, HorarioFuncionamentoDTO> entry : dto.getHorariosFuncionamento().entrySet()) {
                 HorarioFuncionamentoDTO horarioDTO = entry.getValue();
@@ -66,13 +67,13 @@ public class Converter {
         if (dto.getReservas() != null) {
             restaurante.setReservas(dto.getReservas().stream()
                     .map(Converter::toReserva)
-                    .collect(Collectors.toList()));
+                    .toList());
         }
 
         if (dto.getAvaliacoes() != null) {
             restaurante.setAvaliacoes(dto.getAvaliacoes().stream()
                     .map(Converter::toAvaliacao)
-                    .collect(Collectors.toList()));
+                    .toList());
         }
 
         return restaurante;
@@ -86,7 +87,6 @@ public class Converter {
         dto.setNumeroPessoas(reserva.getNumeroPessoas());
         dto.setStatus(reserva.getStatus() != null ? reserva.getStatus().toString() : null);
 
-        // Modificado para usar o restaurante diretamente
         if (reserva.getRestaurante() != null) {
             dto.setRestauranteId(reserva.getRestaurante().getId());
         }
@@ -136,30 +136,5 @@ public class Converter {
         avaliacao.setDataHora(dto.getDataHora());
 
         return avaliacao;
-    }
-
-    public static List<RestauranteDTO> toRestauranteDTOList(List<Restaurante> restaurantes) {
-        return restaurantes.stream().map(Converter::toRestauranteDTO).collect(Collectors.toList());
-    }
-
-    public static List<Restaurante> toRestauranteList(List<RestauranteDTO> dtos) {
-        return dtos.stream().map(Converter::toRestaurante).collect(Collectors.toList());
-    }
-
-
-    public static List<ReservaDTO> toReservaDTOList(List<Reserva> reservas) {
-        return reservas.stream().map(Converter::toReservaDTO).collect(Collectors.toList());
-    }
-
-    public static List<Reserva> toReservaList(List<ReservaDTO> dtos) {
-        return dtos.stream().map(Converter::toReserva).collect(Collectors.toList());
-    }
-
-    public static List<AvaliacaoDTO> toAvaliacaoDTOList(List<Avaliacao> avaliacoes) {
-        return avaliacoes.stream().map(Converter::toAvaliacaoDTO).collect(Collectors.toList());
-    }
-
-    public static List<Avaliacao> toAvaliacaoList(List<AvaliacaoDTO> dtos) {
-        return dtos.stream().map(Converter::toAvaliacao).collect(Collectors.toList());
     }
 }

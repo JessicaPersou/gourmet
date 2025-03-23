@@ -3,7 +3,6 @@ package com.postech.gourmet.adapters.controller;
 import com.postech.gourmet.adapters.dto.ReservaDTO;
 import com.postech.gourmet.adapters.mapper.EntityMapper;
 import com.postech.gourmet.application.usecase.reserva.GerenciarReservaUseCase;
-import com.postech.gourmet.application.usecase.mesa.ReservaMesaUseCase;
 import com.postech.gourmet.domain.entities.Reserva;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.util.List;
 public class ReservaController {
 
     private final GerenciarReservaUseCase gerenciarReservaUseCase;
-        private final EntityMapper entityMapper;
+    private final EntityMapper entityMapper;
 
     @Autowired
     public ReservaController(

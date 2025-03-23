@@ -8,25 +8,21 @@ import com.postech.gourmet.domain.exception.DuplicateResourceException;
 import com.postech.gourmet.domain.exception.InvalidRequestException;
 import com.postech.gourmet.domain.exception.ResourceNotFoundException;
 import com.postech.gourmet.domain.repositories.RestauranteRepository;
-import com.postech.gourmet.domain.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 @Service
 public class CadastroRestauranteUseCase {
     private final RestauranteRepository restauranteRepository;
-    private final UsuarioRepository usuarioRepository;
 
     public CadastroRestauranteUseCase(
-            RestauranteRepository restauranteRepository,
-            UsuarioRepository usuarioRepository) {
+            RestauranteRepository restauranteRepository) {
         this.restauranteRepository = restauranteRepository;
-        this.usuarioRepository = usuarioRepository;
     }
 
     @Transactional
@@ -40,7 +36,7 @@ public class CadastroRestauranteUseCase {
         restaurante.setCapacidade(restauranteDTO.getCapacidade());
 
 
-        Map<DayOfWeek, HorarioFuncionamento> horarios = new HashMap<>();
+        Map<DayOfWeek, HorarioFuncionamento> horarios = new EnumMap<>(DayOfWeek.class);
         for (Map.Entry<DayOfWeek, HorarioFuncionamentoDTO> entry :
                 restauranteDTO.getHorariosFuncionamento().entrySet()) {
 
@@ -99,7 +95,7 @@ public class CadastroRestauranteUseCase {
         }
 
         if (restauranteDTO.getHorariosFuncionamento() != null && !restauranteDTO.getHorariosFuncionamento().isEmpty()) {
-            Map<DayOfWeek, HorarioFuncionamento> horarios = new HashMap<>();
+            Map<DayOfWeek, HorarioFuncionamento> horarios = new EnumMap<>(DayOfWeek.class);
 
             for (Map.Entry<DayOfWeek, HorarioFuncionamentoDTO> entry :
                     restauranteDTO.getHorariosFuncionamento().entrySet()) {

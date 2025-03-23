@@ -7,8 +7,12 @@ import java.util.Optional;
 
 public interface AvaliacaoRepository {
     Avaliacao save(Avaliacao avaliacao);
+
     Optional<Avaliacao> findById(Long id);
+
     List<Avaliacao> findByRestauranteId(Long restauranteId);
+
     List<Avaliacao> findByUsuarioId(Long usuarioId);
+
     Double calcularMediaAvaliacoesPorRestaurante(Long restauranteId);
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
@@ -36,7 +35,7 @@ public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
         return jpaAvaliacaoRepository.findByRestauranteId(restauranteId)
                 .stream()
                 .map(AvaliacaoData::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -44,7 +43,7 @@ public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
         return jpaAvaliacaoRepository.findByUsuarioId(usuarioId)
                 .stream()
                 .map(AvaliacaoData::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -55,7 +54,7 @@ public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
     private AvaliacaoData convertToData(Avaliacao avaliacao) {
         AvaliacaoData data = new AvaliacaoData();
         data.setId(avaliacao.getId());
-//        data.setUsuario(avaliacao.getUsuario());
+        data.setUsuario(avaliacao.getUsuario());
         data.setNota(avaliacao.getNota());
         data.setComentario(avaliacao.getComentario());
         data.setDataHora(avaliacao.getDataHora());

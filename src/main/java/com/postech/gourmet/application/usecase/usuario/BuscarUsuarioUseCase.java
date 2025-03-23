@@ -15,9 +15,8 @@ public class BuscarUsuarioUseCase {
     }
 
     public Usuario buscarUsuarioPorId(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
+        return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + id));
-        return usuario;
     }
 
 }

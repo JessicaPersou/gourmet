@@ -9,10 +9,8 @@ import com.postech.gourmet.gateways.data.UsuarioData;
 import com.postech.gourmet.gateways.jpa.JpaReservaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class ReservaRepositoryImpl implements ReservaRepository {
@@ -38,7 +36,12 @@ public class ReservaRepositoryImpl implements ReservaRepository {
         return jpaReservaRepository.findAll()
                 .stream()
                 .map(ReservaData::toDomain)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return jpaReservaRepository.existsById(id);
     }
 
     @Override
@@ -51,8 +54,9 @@ public class ReservaRepositoryImpl implements ReservaRepository {
         return jpaReservaRepository.findByUsuarioId(usuarioId)
                 .stream()
                 .map(ReservaData::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
+
     private ReservaData convertToData(Reserva reserva) {
         ReservaData data = new ReservaData();
         data.setId(reserva.getId());

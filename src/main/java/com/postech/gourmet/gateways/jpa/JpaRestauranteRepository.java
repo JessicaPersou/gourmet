@@ -10,11 +10,13 @@ import java.util.List;
 public interface JpaRestauranteRepository extends JpaRepository<RestauranteData, Long> {
 
     List<RestauranteData> findByNomeContaining(String nome);
+
     @Query("SELECT r FROM RestauranteData r " +
             "WHERE LOWER(r.nome) LIKE LOWER(CONCAT('%', :termo, '%')) " +
             "OR LOWER(r.endereco) LIKE LOWER(CONCAT('%', :termo, '%')) " +
             "OR LOWER(r.tipoCozinha) LIKE LOWER(CONCAT('%', :termo, '%'))")
     List<RestauranteData> findByNomeContainingOrEnderecoContainingOrTipoCozinhaContaining(
             @Param("termo") String termo);
+
     boolean existsByNomeAndEndereco(String nome, String endereco);
 }

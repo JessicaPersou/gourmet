@@ -1,16 +1,11 @@
 package com.postech.gourmet.domain.entities;
 
-import com.postech.gourmet.domain.enums.StatusReserva;
-import com.postech.gourmet.domain.exception.ResourceNotFoundException;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 
 public class Restaurante {
     private Long id;
@@ -26,7 +21,7 @@ public class Restaurante {
     public Restaurante() {
         this.avaliacoes = new ArrayList<>();
         this.reservas = new ArrayList<>();
-        this.horariosFuncionamento = new HashMap<>();
+        this.horariosFuncionamento = new EnumMap<>(DayOfWeek.class);
     }
 
     public Restaurante(Long id, String nome, String endereco, String telefone, Integer capacidade,
@@ -38,7 +33,7 @@ public class Restaurante {
         this.capacidade = capacidade;
         this.avaliacoes = avaliacoes != null ? avaliacoes : new ArrayList<>();
         this.reservas = reservas != null ? reservas : new ArrayList<>();
-        this.horariosFuncionamento = new HashMap<>();
+        this.horariosFuncionamento = new EnumMap<>(DayOfWeek.class);
     }
 
     public void definirHorarioFuncionamento(DayOfWeek diaSemana, LocalTime abertura, LocalTime fechamento) {

@@ -6,15 +6,20 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.postech.gourmet.domain.entities.HorarioFuncionamento;
 import com.postech.gourmet.domain.entities.Restaurante;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Entity
 @Table(name = "restaurante")
 @Data
@@ -31,7 +36,6 @@ public class RestauranteData {
     private String telefone;
     private String tipoCozinha;
     private Integer capacidade;
-
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservaData> reservas = new ArrayList<>();
 
@@ -62,10 +66,11 @@ public class RestauranteData {
 
                 Map<String, Map<String, String>> tempMap = mapper.readValue(
                         this.horariosFuncionamentoJson,
-                        new TypeReference<Map<String, Map<String, String>>>() {}
+                        new TypeReference<Map<String, Map<String, String>>>() {
+                        }
                 );
 
-                Map<DayOfWeek, HorarioFuncionamento> horarios = new HashMap<>();
+                Map<DayOfWeek, HorarioFuncionamento> horarios = new EnumMap<>(DayOfWeek.class);
 
                 for (Map.Entry<String, Map<String, String>> entry : tempMap.entrySet()) {
                     DayOfWeek day = DayOfWeek.valueOf(entry.getKey());
@@ -79,11 +84,11 @@ public class RestauranteData {
 
                 restaurante.setHorariosFuncionamento(horarios);
             } catch (Exception e) {
-                System.err.println("Erro ao converter horários: " + e.getMessage());
-                restaurante.setHorariosFuncionamento(new HashMap<>());
+                log.info("Erro ao converter horários: " + e.getMessage());
+                restaurante.setHorariosFuncionamento(new EnumMap<>(DayOfWeek.class));
             }
         } else {
-            restaurante.setHorariosFuncionamento(new HashMap<>());
+            restaurante.setHorariosFuncionamento(new EnumMap<>(DayOfWeek.class));
         }
 
         return restaurante;

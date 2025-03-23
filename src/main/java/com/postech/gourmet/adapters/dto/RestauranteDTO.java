@@ -6,10 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RestauranteDTO {
     private Long id;
@@ -30,7 +27,7 @@ public class RestauranteDTO {
 
     private List<ReservaDTO> reservas;
 
-    private Map<DayOfWeek, HorarioFuncionamentoDTO> horariosFuncionamento = new HashMap<>();
+    private Map<DayOfWeek, HorarioFuncionamentoDTO> horariosFuncionamento = new EnumMap<>(DayOfWeek.class);
 
     private List<AvaliacaoDTO> avaliacoes = new ArrayList<>();
 

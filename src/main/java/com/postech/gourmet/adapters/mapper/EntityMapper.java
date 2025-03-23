@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class EntityMapper {
@@ -28,7 +27,7 @@ public class EntityMapper {
         }
         return entities.stream()
                 .map(entity -> mapTo(entity, dtoClass))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public <D, T> T updateEntityFromDTO(D dto, T entity) {

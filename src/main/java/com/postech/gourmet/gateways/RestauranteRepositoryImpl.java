@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class RestauranteRepositoryImpl implements RestauranteRepository {
@@ -39,7 +38,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
         return jpaRestauranteRepository.findAll()
                 .stream()
                 .map(RestauranteData::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -53,7 +52,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
         return jpaRestauranteRepository.findByNomeContainingOrEnderecoContainingOrTipoCozinhaContaining(nome)
                 .stream()
                 .map(RestauranteData::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
         return jpaRestauranteRepository.findByNomeContaining(nome)
                 .stream()
                 .map(RestauranteData::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

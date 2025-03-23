@@ -34,8 +34,8 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 
     @Override
-    public Optional<Usuario> findByEmail(String email) {
-        return jpaUsuarioRepository.findByEmail(email).map(UsuarioData::toDomain);
+    public boolean existsById(Long id) {
+        return jpaUsuarioRepository.existsById(id);
     }
 
     @Override

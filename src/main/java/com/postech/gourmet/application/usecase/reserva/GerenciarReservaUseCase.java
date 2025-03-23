@@ -52,9 +52,9 @@ public class GerenciarReservaUseCase {
         Usuario usuario = usuarioRepository.findById(reservaDTO.getUsuarioId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
-//        if (!restaurante.verificarDisponibilidade(reservaDTO.getDataHora(), reservaDTO.getNumeroPessoas())) {
-//            throw new InvalidRequestException("Restaurante sem disponibilidade para esta data/hora");
-//        }
+        if (!verificarDisponibilidade(reservaDTO.getRestauranteId(), reservaDTO.getDataHora(), reservaDTO.getNumeroPessoas())) {
+            throw new InvalidRequestException("Restaurante sem disponibilidade para esta data/hora");
+        }
 
         Reserva reserva = new Reserva();
         reserva.setRestaurante(restaurante);
@@ -68,26 +68,15 @@ public class GerenciarReservaUseCase {
     }
 
 
-
     public List<Reserva> listarReservas() {
         return reservaRepository.findAll();
     }
 
     public List<Reserva> listarReservasPorUsuario(Long usuarioId) {
-        // Verifica se o usuário existe
-//        if (!usuarioRepository.findById(usuarioId)) {
-//            throw new ResourceNotFoundException("Usuário não encontrado com ID: " + usuarioId);
-//        }
-
-        return reservaRepository.findByUsuarioId(usuarioId);
-    }
-
-    public List<Reserva> listarReservasPorRestaurante(Long restauranteId) {
-        if (!restauranteRepository.existsById(restauranteId)) {
-            throw new ResourceNotFoundException("Restaurante não encontrado com ID: " + restauranteId);
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new ResourceNotFoundException("Usuário não encontrado com ID: " + usuarioId);
         }
-//        reservaRepository.findByMesaRestauranteId(restauranteId);
-        return null;
+        return reservaRepository.findByUsuarioId(usuarioId);
     }
 
     @Transactional
@@ -98,10 +87,8 @@ public class GerenciarReservaUseCase {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + usuarioId));
 
-        boolean isOwner = reserva.getUsuario() != null && reserva.getUsuario().getId().equals(usuarioId);
-
-        if (!isOwner) {
-            throw new InvalidRequestException("Você não tem permissão para cancelar esta reserva");
+        if (usuario != null) {
+            throw new InvalidRequestException("Usuário sem permissão para cancelar esta reserva");
         }
 
         if (reserva.getDataHora().isBefore(LocalDateTime.now())) {
@@ -136,12 +123,14 @@ public class GerenciarReservaUseCase {
     }
 
 
-    public boolean verificarDisponibilidadeRestaurante(Long restauranteId, LocalDateTime dataHora) {
+    public boolean verificarDisponibilidade(Long restauranteId, LocalDateTime dataHora, Integer numeroPessoas) {
+
         Restaurante restaurante = restauranteRepository.findById(restauranteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurante não encontrado com ID: " + restauranteId));
-
-        // Verifica se o restaurante está aberto nesta data/hora
         DayOfWeek diaSemana = dataHora.getDayOfWeek();
+        if (restaurante.getCapacidade() <= numeroPessoas) {
+            return false;
+        }
         return restaurante.estaAberto(diaSemana, dataHora.toLocalTime());
     }
 }

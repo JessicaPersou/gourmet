@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface JpaAvaliacaoRepository extends JpaRepository<AvaliacaoData, Long> {
     List<AvaliacaoData> findByRestauranteId(Long restauranteId);
+
     List<AvaliacaoData> findByUsuarioId(Long usuarioId);
+
     @Query("SELECT AVG(a.nota) FROM AvaliacaoData a WHERE a.restaurante.id = :restauranteId")
     Double calcularMediaAvaliacoesPorRestaurante(@Param("restauranteId") Long restauranteId);
 }

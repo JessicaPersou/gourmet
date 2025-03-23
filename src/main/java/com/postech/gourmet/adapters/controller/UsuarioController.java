@@ -6,7 +6,6 @@ import com.postech.gourmet.application.usecase.usuario.AtualizarUsuarioUseCase;
 import com.postech.gourmet.application.usecase.usuario.BuscarUsuarioUseCase;
 import com.postech.gourmet.application.usecase.usuario.CadastrarUsuarioUseCase;
 import com.postech.gourmet.domain.entities.Usuario;
-import com.postech.gourmet.domain.repositories.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-    private final UsuarioRepository usuarioRepository;
     private final CadastrarUsuarioUseCase cadastrarUsuarioUseCase;
     private final BuscarUsuarioUseCase buscarUsuarioUseCase;
     private final AtualizarUsuarioUseCase atualizarUsuarioUseCase;
@@ -25,12 +23,10 @@ public class UsuarioController {
 
     @Autowired
     public UsuarioController(
-            UsuarioRepository usuarioRepository,
             CadastrarUsuarioUseCase cadastrarUsuarioUseCase,
             BuscarUsuarioUseCase buscarUsuarioUseCase,
             AtualizarUsuarioUseCase atualizarUsuarioUseCase,
             EntityMapper entityMapper) {
-        this.usuarioRepository = usuarioRepository;
         this.cadastrarUsuarioUseCase = cadastrarUsuarioUseCase;
         this.buscarUsuarioUseCase = buscarUsuarioUseCase;
         this.atualizarUsuarioUseCase = atualizarUsuarioUseCase;
