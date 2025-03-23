@@ -29,15 +29,6 @@ public class AvaliarRestauranteUseCase {
         this.usuarioRepository = usuarioRepository;
     }
 
-    /**
-     * Permite a um cliente avaliar um restaurante com nota e comentário
-     *
-     * @param restauranteId ID do restaurante a ser avaliado
-     * @param usuarioId ID do usuário que está fazendo a avaliação
-     * @param nota Nota de 1 a 5
-     * @param comentario Comentário opcional sobre a experiência
-     * @return A avaliação registrada
-     */
     @Transactional
     public Avaliacao avaliarRestaurante(Long restauranteId, Long usuarioId, int nota, String comentario) {
         // Validação da nota

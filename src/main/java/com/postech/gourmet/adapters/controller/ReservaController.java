@@ -18,17 +18,21 @@ import java.util.List;
 public class ReservaController {
 
     private final GerenciarReservaUseCase gerenciarReservaUseCase;
-    private final ReservaMesaUseCase reservaMesaUseCase;
-    private final EntityMapper entityMapper;
+        private final EntityMapper entityMapper;
 
     @Autowired
     public ReservaController(
             GerenciarReservaUseCase gerenciarReservaUseCase,
-            ReservaMesaUseCase reservaMesaUseCase,
             EntityMapper entityMapper) {
         this.gerenciarReservaUseCase = gerenciarReservaUseCase;
-        this.reservaMesaUseCase = reservaMesaUseCase;
         this.entityMapper = entityMapper;
+    }
+
+    @PostMapping
+    public ResponseEntity<ReservaDTO> reservar(@RequestBody @Valid ReservaDTO reservaDTO) {
+        Reserva reserva = gerenciarReservaUseCase.novaReserva(reservaDTO);
+        ReservaDTO reservaFeita = entityMapper.mapTo(reserva, ReservaDTO.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reservaFeita);
     }
 
     @GetMapping
@@ -53,13 +57,6 @@ public class ReservaController {
         List<ReservaDTO> reservaDTOs = entityMapper.mapToList(reservas, ReservaDTO.class);
 
         return ResponseEntity.ok(reservaDTOs);
-    }
-
-    @PostMapping
-    public ResponseEntity<ReservaDTO> reservarMesa(@Valid @RequestBody ReservaDTO reservaDTO) {
-        Reserva reserva = reservaMesaUseCase.reservarMesa(reservaDTO);
-        ReservaDTO novaReservaDTO = entityMapper.mapTo(reserva, ReservaDTO.class);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaReservaDTO);
     }
 
     @DeleteMapping("/{reservaId}")

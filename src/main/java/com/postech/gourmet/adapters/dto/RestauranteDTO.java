@@ -28,9 +28,9 @@ public class RestauranteDTO {
 
     private Integer capacidade;
 
-    private Map<DayOfWeek, HorarioFuncionamentoDTO> horariosFuncionamento = new HashMap<>();
+    private List<ReservaDTO> reservas;
 
-    private List<MesaDTO> mesas = new ArrayList<>();
+    private Map<DayOfWeek, HorarioFuncionamentoDTO> horariosFuncionamento = new HashMap<>();
 
     private List<AvaliacaoDTO> avaliacoes = new ArrayList<>();
 
@@ -76,12 +76,12 @@ public class RestauranteDTO {
         this.capacidade = capacidade;
     }
 
-    public List<MesaDTO> getMesas() {
-        return mesas;
+    public List<ReservaDTO> getReservas() {
+        return reservas;
     }
 
-    public void setMesas(List<MesaDTO> mesas) {
-        this.mesas = mesas != null ? mesas : new ArrayList<>();
+    public void setReservas(List<ReservaDTO> reservas) {
+        this.reservas = reservas;
     }
 
     public List<AvaliacaoDTO> getAvaliacoes() {

@@ -2,7 +2,7 @@ package com.postech.gourmet.application.usecase.restaurante;
 
 import com.postech.gourmet.adapters.dto.HorarioFuncionamentoDTO;
 import com.postech.gourmet.adapters.dto.RestauranteDTO;
-import com.postech.gourmet.domain.entities.Mesa;
+import com.postech.gourmet.domain.entities.HorarioFuncionamento;
 import com.postech.gourmet.domain.entities.Restaurante;
 import com.postech.gourmet.domain.exception.DuplicateResourceException;
 import com.postech.gourmet.domain.exception.InvalidRequestException;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -41,11 +40,11 @@ public class CadastroRestauranteUseCase {
         restaurante.setCapacidade(restauranteDTO.getCapacidade());
 
 
-        Map<DayOfWeek, Restaurante.HorarioFuncionamento> horarios = new HashMap<>();
+        Map<DayOfWeek, HorarioFuncionamento> horarios = new HashMap<>();
         for (Map.Entry<DayOfWeek, HorarioFuncionamentoDTO> entry :
                 restauranteDTO.getHorariosFuncionamento().entrySet()) {
 
-            Restaurante.HorarioFuncionamento horario = new Restaurante.HorarioFuncionamento(
+            HorarioFuncionamento horario = new HorarioFuncionamento(
                     entry.getValue().getAbertura(),
                     entry.getValue().getFechamento()
             );
@@ -72,33 +71,6 @@ public class CadastroRestauranteUseCase {
         return restauranteRepository.save(restaurante);
     }
 
-    @Transactional
-    public Restaurante adicionarMesas(Long restauranteId, List<Mesa> mesas) {
-        Restaurante restaurante = restauranteRepository.findById(restauranteId)
-                .orElseThrow(() -> new ResourceNotFoundException("Restaurante não encontrado com ID: " + restauranteId));
-
-        for (Mesa mesa : mesas) {
-            if (mesa.getNumero() <= 0) {
-                throw new InvalidRequestException("O número da mesa deve ser maior que zero");
-            }
-
-            if (mesa.getCapacidade() <= 0) {
-                throw new InvalidRequestException("A capacidade da mesa deve ser maior que zero");
-            }
-
-            boolean mesaDuplicada = restaurante.getMesas().stream()
-                    .anyMatch(m -> m.getNumero() == mesa.getNumero());
-
-            if (mesaDuplicada) {
-                throw new DuplicateResourceException("Já existe uma mesa com o número " + mesa.getNumero());
-            }
-
-            mesa.setRestaurante(restaurante);
-            restaurante.adicionarMesa(mesa);
-        }
-
-        return restauranteRepository.save(restaurante);
-    }
 
     @Transactional
     public Restaurante atualizarRestaurante(Long id, RestauranteDTO restauranteDTO) {
@@ -127,12 +99,12 @@ public class CadastroRestauranteUseCase {
         }
 
         if (restauranteDTO.getHorariosFuncionamento() != null && !restauranteDTO.getHorariosFuncionamento().isEmpty()) {
-            Map<DayOfWeek, Restaurante.HorarioFuncionamento> horarios = new HashMap<>();
+            Map<DayOfWeek, HorarioFuncionamento> horarios = new HashMap<>();
 
             for (Map.Entry<DayOfWeek, HorarioFuncionamentoDTO> entry :
                     restauranteDTO.getHorariosFuncionamento().entrySet()) {
 
-                Restaurante.HorarioFuncionamento horario = new Restaurante.HorarioFuncionamento(
+                HorarioFuncionamento horario = new HorarioFuncionamento(
                         entry.getValue().getAbertura(),
                         entry.getValue().getFechamento()
                 );

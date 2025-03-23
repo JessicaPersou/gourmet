@@ -1,9 +1,10 @@
 package com.postech.gourmet.gateways;
 
 import com.postech.gourmet.domain.entities.Reserva;
+import com.postech.gourmet.domain.enums.StatusReserva;
 import com.postech.gourmet.domain.repositories.ReservaRepository;
-import com.postech.gourmet.gateways.data.MesaData;
 import com.postech.gourmet.gateways.data.ReservaData;
+import com.postech.gourmet.gateways.data.RestauranteData;
 import com.postech.gourmet.gateways.data.UsuarioData;
 import com.postech.gourmet.gateways.jpa.JpaReservaRepository;
 import org.springframework.stereotype.Repository;
@@ -52,40 +53,24 @@ public class ReservaRepositoryImpl implements ReservaRepository {
                 .map(ReservaData::toDomain)
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public List<Reserva> findByMesaRestauranteId(Long restauranteId) {
-        return jpaReservaRepository.findByMesaRestauranteId(restauranteId)
-                .stream()
-                .map(ReservaData::toDomain)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Reserva> findReservasAtivasByMesaIdAndIntervaloTempo(
-            Long mesaId, LocalDateTime inicio, LocalDateTime fim) {
-        return jpaReservaRepository.findReservasAtivasByMesaIdAndIntervaloTempo(mesaId, inicio, fim)
-                .stream()
-                .map(ReservaData::toDomain)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public long countByMesaRestauranteIdAndData(Long restauranteId, LocalDateTime dataInicio, LocalDateTime dataFim) {
-        return jpaReservaRepository.countByMesaRestauranteIdAndData(restauranteId, dataInicio, dataFim);
-    }
-
     private ReservaData convertToData(Reserva reserva) {
         ReservaData data = new ReservaData();
         data.setId(reserva.getId());
-//        data.setUsuario(reserva.getUsuario());
+        data.setCliente(reserva.getCliente());
         data.setDataHora(reserva.getDataHora());
-        data.setStatus(reserva.getStatus().toString());
+        data.setNumeroPessoas(reserva.getNumeroPessoas());
 
-        if (reserva.getMesa() != null) {
-            MesaData mesaData = new MesaData();
-            mesaData.setId(reserva.getMesa().getId());
-            data.setMesa(mesaData);
+        if (reserva.getStatus() != null) {
+            data.setStatus(reserva.getStatus().toString());
+        } else {
+            data.setStatus(StatusReserva.PENDENTE.toString());
+        }
+
+        if (reserva.getRestaurante() != null) {
+            RestauranteData restauranteData = new RestauranteData();
+            restauranteData.setId(reserva.getRestaurante().getId());
+            restauranteData.setNome(reserva.getRestaurante().getNome());
+            data.setRestaurante(restauranteData);
         }
 
         if (reserva.getUsuario() != null) {

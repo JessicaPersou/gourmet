@@ -3,12 +3,10 @@ package com.postech.gourmet.gateways.data;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.postech.gourmet.domain.entities.HorarioFuncionamento;
 import com.postech.gourmet.domain.entities.Restaurante;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -35,7 +33,7 @@ public class RestauranteData {
     private Integer capacidade;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MesaData> mesas = new ArrayList<>();
+    private List<ReservaData> reservas = new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AvaliacaoData> avaliacoes = new ArrayList<>();
@@ -52,8 +50,10 @@ public class RestauranteData {
         restaurante.setTipoCozinha(this.tipoCozinha);
         restaurante.setCapacidade(this.capacidade);
 
-        restaurante.setMesas(new ArrayList<>());
+
         restaurante.setAvaliacoes(new ArrayList<>());
+
+        restaurante.setReservas(new ArrayList<>());
 
         if (this.horariosFuncionamentoJson != null && !this.horariosFuncionamentoJson.isEmpty()) {
             try {
@@ -65,7 +65,7 @@ public class RestauranteData {
                         new TypeReference<Map<String, Map<String, String>>>() {}
                 );
 
-                Map<DayOfWeek, Restaurante.HorarioFuncionamento> horarios = new HashMap<>();
+                Map<DayOfWeek, HorarioFuncionamento> horarios = new HashMap<>();
 
                 for (Map.Entry<String, Map<String, String>> entry : tempMap.entrySet()) {
                     DayOfWeek day = DayOfWeek.valueOf(entry.getKey());
@@ -74,7 +74,7 @@ public class RestauranteData {
                     LocalTime abertura = LocalTime.parse(times.get("abertura"));
                     LocalTime fechamento = LocalTime.parse(times.get("fechamento"));
 
-                    horarios.put(day, new Restaurante.HorarioFuncionamento(abertura, fechamento));
+                    horarios.put(day, new HorarioFuncionamento(abertura, fechamento));
                 }
 
                 restaurante.setHorariosFuncionamento(horarios);

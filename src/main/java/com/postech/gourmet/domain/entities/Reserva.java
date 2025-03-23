@@ -1,32 +1,27 @@
 package com.postech.gourmet.domain.entities;
 
+import com.postech.gourmet.domain.enums.StatusReserva;
+
 import java.time.LocalDateTime;
 
 public class Reserva {
     private Long id;
     private String cliente;
     private LocalDateTime dataHora;
-    private Mesa mesa;
-    private Usuario usuario;  // Adicionada referência ao usuário
-    private StatusReserva status;  // Novo campo para controlar status da reserva
-    private Integer numPessoas; // Campo adicionado para compatibilidade
-
-    public enum StatusReserva {
-        PENDENTE,
-        CONFIRMADA,
-        CANCELADA,
-        CONCLUIDA
-    }
+    private Restaurante restaurante;
+    private Usuario usuario;
+    private StatusReserva status;
+    private Integer numeroPessoas;
 
     public Reserva() {
         this.status = StatusReserva.PENDENTE;
     }
 
-    public Reserva(Long id, String cliente, LocalDateTime dataHora, Mesa mesa, Usuario usuario) {
+    public Reserva(Long id, String cliente, LocalDateTime dataHora, Restaurante restaurante, Usuario usuario) {
         this.id = id;
         this.cliente = cliente;
         this.dataHora = dataHora;
-        this.mesa = mesa;
+        this.restaurante = restaurante;
         this.usuario = usuario;
         this.status = StatusReserva.PENDENTE;
     }
@@ -58,12 +53,12 @@ public class Reserva {
         this.dataHora = dataHora;
     }
 
-    public Mesa getMesa() {
-        return mesa;
+    public Restaurante getRestaurante() {
+        return restaurante;
     }
 
-    public void setMesa(Mesa mesa) {
-        this.mesa = mesa;
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
     }
 
     public Usuario getUsuario() {
@@ -82,12 +77,12 @@ public class Reserva {
         this.status = status;
     }
 
-    public Integer getNumPessoas() {
-        return numPessoas;
+    public Integer getNumeroPessoas() {
+        return numeroPessoas;
     }
 
-    public void setNumPessoas(Integer numPessoas) {
-        this.numPessoas = numPessoas;
+    public void setNumeroPessoas(Integer numeroPessoas) {
+        this.numeroPessoas = numeroPessoas;
     }
 
     public void confirmar() {

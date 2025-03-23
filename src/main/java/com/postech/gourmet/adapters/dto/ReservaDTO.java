@@ -16,8 +16,10 @@ public class ReservaDTO {
     @Future(message = "A data da reserva deve ser no futuro")
     private LocalDateTime dataHora;
 
-    @NotNull(message = "A mesa é obrigatória")
-    private Long mesaId;
+    private Integer numeroPessoas;
+
+    @NotNull(message = "O restaurante é obrigatória")
+    private Long restauranteId;
 
     private Long usuarioId;
 
@@ -47,12 +49,20 @@ public class ReservaDTO {
         this.dataHora = dataHora;
     }
 
-    public Long getMesaId() {
-        return mesaId;
+    public Integer getNumeroPessoas() {
+        return numeroPessoas;
     }
 
-    public void setMesaId(Long mesaId) {
-        this.mesaId = mesaId;
+    public void setNumeroPessoas(Integer numeroPessoas) {
+        this.numeroPessoas = numeroPessoas;
+    }
+
+    public Long getRestauranteId() {
+        return restauranteId;
+    }
+
+    public void setRestauranteId(Long restauranteId) {
+        this.restauranteId = restauranteId;
     }
 
     public Long getUsuarioId() {

@@ -1,9 +1,9 @@
 package com.postech.gourmet.gateways.data;
 
-import com.postech.gourmet.domain.entities.Mesa;
 import com.postech.gourmet.domain.entities.Reserva;
 import com.postech.gourmet.domain.entities.Restaurante;
 import com.postech.gourmet.domain.entities.Usuario;
+import com.postech.gourmet.domain.enums.StatusReserva;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,57 +22,43 @@ public class ReservaData {
 
     private String cliente;
     private LocalDateTime dataHora;
-    private String status;  // Armazena o nome do enum StatusReserva
-    private Integer numPessoas; // Campo adicionado para compatibilidade
+    private String status;
+    private Integer numeroPessoas;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mesa_id")
-    private MesaData mesa;
+    @JoinColumn(name = "restaurante_id")
+    private RestauranteData restaurante;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
     private UsuarioData usuario;
 
-    /**
-     * Converte entidade de dados para objeto de domínio
-     */
+
     public Reserva toDomain() {
         Reserva reserva = new Reserva();
         reserva.setId(this.id);
         reserva.setCliente(this.cliente);
         reserva.setDataHora(this.dataHora);
-        reserva.setNumPessoas(this.numPessoas);
+        reserva.setNumeroPessoas(this.numeroPessoas);
 
-        // Converte string para enum
         if (this.status != null) {
             try {
-                reserva.setStatus(Reserva.StatusReserva.valueOf(this.status));
+                reserva.setStatus(StatusReserva.valueOf(this.status));
             } catch (IllegalArgumentException e) {
-                // Se a conversão falhar, define o status como PENDENTE
-                reserva.setStatus(Reserva.StatusReserva.PENDENTE);
+                reserva.setStatus(StatusReserva.PENDENTE);
             }
         } else {
-            reserva.setStatus(Reserva.StatusReserva.PENDENTE);
+            reserva.setStatus(StatusReserva.PENDENTE);
         }
 
-        // Evita referência circular na mesa
-        if (this.mesa != null) {
-            Mesa mesaDomain = new Mesa();
-            mesaDomain.setId(this.mesa.getId());
-            mesaDomain.setNumero(this.mesa.getNumero());
-            mesaDomain.setCapacidade(this.mesa.getCapacidade());
-
-            // Apenas referência básica ao restaurante, se necessário
-            if (this.mesa.getRestaurante() != null) {
-                Restaurante restaurante = new Restaurante();
-                restaurante.setId(this.mesa.getRestaurante().getId());
-                mesaDomain.setRestaurante(restaurante);
-            }
-
-            reserva.setMesa(mesaDomain);
+        if (this.restaurante != null) {
+            Restaurante restauranteDomain = new Restaurante();
+            restauranteDomain.setId(this.restaurante.getId());
+            restauranteDomain.setNome(this.restaurante.getNome());
+            // Outros campos básicos do restaurante, se necessário
+            reserva.setRestaurante(restauranteDomain);
         }
 
-        // Converte usuário
         if (this.usuario != null) {
             Usuario usuarioDomain = new Usuario();
             usuarioDomain.setId(this.usuario.getId());

@@ -1,11 +1,9 @@
 package com.postech.gourmet.adapters.controller;
 
-import com.postech.gourmet.adapters.dto.MesaDTO;
 import com.postech.gourmet.adapters.dto.RestauranteDTO;
 import com.postech.gourmet.adapters.mapper.EntityMapper;
 import com.postech.gourmet.application.usecase.restaurante.BuscarRestauranteUseCase;
 import com.postech.gourmet.application.usecase.restaurante.CadastroRestauranteUseCase;
-import com.postech.gourmet.domain.entities.Mesa;
 import com.postech.gourmet.domain.entities.Restaurante;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,13 +70,4 @@ public class RestauranteController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/mesas")
-    public ResponseEntity<List<MesaDTO>> adicionarMesas(@PathVariable Long id, @Valid @RequestBody List<MesaDTO> mesasDTO) {
-
-        List<Mesa> mesas = entityMapper.mapToList(mesasDTO, Mesa.class);
-        Restaurante restauranteAtualizado = cadastroRestauranteUseCase.adicionarMesas(id, mesas);
-        List<MesaDTO> mesasAtualizadasDTO = entityMapper.mapToList(restauranteAtualizado.getMesas(), MesaDTO.class);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(mesasAtualizadasDTO);
-    }
 }
