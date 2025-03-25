@@ -55,6 +55,19 @@ O projeto segue uma arquitetura limpa com separação clara de responsabilidades
 
 4. Acesse a aplicação em http://localhost:8080
 
+### Usando Docker Hub
+
+A imagem do projeto está disponível no Docker Hub:
+
+https://hub.docker.com/r/jessicapersou/gourmet
+
+Para utilizar a imagem pronta:
+
+```bash
+docker pull jessicapersou/gourmet
+docker run -p 8080:8080 jessicapersou/gourmet
+```
+
 ### Executando Localmente
 
 1. Clone o repositório:
@@ -80,7 +93,15 @@ O projeto segue uma arquitetura limpa com separação clara de responsabilidades
 
 A API está documentada usando Swagger UI. Após iniciar a aplicação, acesse:
 
-- http://localhost:8080/swagger-ui.html
+- Localmente: http://localhost:8080/swagger-ui.html
+- Heroku: https://gourmet-app-df353465182b.herokuapp.com/swagger-ui/index.html
+
+## Demonstração Online
+
+O projeto está disponível online através do Heroku:
+
+- **Site**: https://gourmet-app-df353465182b.herokuapp.com
+- **Swagger UI**: https://gourmet-app-df353465182b.herokuapp.com/swagger-ui/index.html
 
 ## Endpoints Principais
 
