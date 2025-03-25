@@ -1,0 +1,316 @@
+{
+	"info": {
+		"_postman_id": "c3f522b8-6ed8-42ec-b6b2-162f56e1901e",
+		"name": "Gourmet API",
+		"description": "Coleção de endpoints para o sistema de gerenciamento de restaurantes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "19199790"
+	},
+	"item": [
+		{
+			"name": "Usuários",
+			"item": [
+				{
+					"name": "Cadastrar Usuário",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n    \"nome\": \"`Julia Santos\",\n    \"email\": \"juju@email.com\",\n    \"telefone\": \"(11) 111987-4321\",\n    \"restaurante\": false\n}"
+						},
+						"url": "{{baseUrl}}/usuarios",
+						"description": "Cadastra um novo usuário no sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Usuário por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/usuarios/1",
+						"description": "Busca um usuário pelo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Usuário",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Maria Testada\",\n    \"email\": \"mariazinha@email.com\",\n    \"senha\": \"senha123\",\n    \"telefone\": \"(11) 98765-1234\",\n    \"isRestaurante\": false\n}"
+						},
+						"url": "{{baseUrl}}/usuarios/1",
+						"description": "Atualiza os dados de um usuário"
+					},
+					"response": []
+				}
+			],
+			"description": "Operações relacionadas a usuários"
+		},
+		{
+			"name": "Restaurantes",
+			"item": [
+				{
+					"name": "Cadastrar Restaurante",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Restaurante Italiano\",\n    \"endereco\": \"Rua das Oliveiras, 123\",\n    \"telefone\": \"(11) 98765-4321\",\n    \"tipoCozinha\": \"Italiana\",\n    \"capacidade\":100,\n    \"horariosFuncionamento\": {\n        \"MONDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"22:00:00\"\n        },\n        \"TUESDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"22:00:00\"\n        },\n        \"WEDNESDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"22:00:00\"\n        },\n        \"THURSDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"22:00:00\"\n        },\n        \"FRIDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"23:00:00\"\n        },\n        \"SATURDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"23:00:00\"\n        },\n        \"SUNDAY\": {\n            \"abertura\": \"12:00:00\",\n            \"fechamento\": \"22:00:00\"\n        }\n    }\n}"
+						},
+						"url": "{{baseUrl}}/restaurantes"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Todos os Restaurantes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/restaurantes",
+						"description": "Lista todos os restaurantes"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Restaurantes por Termo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurantes?termo=Italiano",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurantes"
+							],
+							"query": [
+								{
+									"key": "termo",
+									"value": "Italiano"
+								}
+							]
+						},
+						"description": "Busca restaurantes por um termo (nome, endereço, tipo de cozinha)"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Restaurante por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/restaurantes/1",
+						"description": "Busca um restaurante pelo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Restaurante",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Restaurante Italiano teste\",\n    \"endereco\": \"Rua das assasAS, 123\",\n    \"telefone\": \"(11) 98765-4321\",\n    \"tipoCozinha\": \"Italiana\",\n    \"horariosFuncionamento\": {\n        \"MONDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"22:00:00\"\n        },\n        \"TUESDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"22:00:00\"\n        },\n        \"WEDNESDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"22:00:00\"\n        },\n        \"THURSDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"22:00:00\"\n        },\n        \"FRIDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"23:00:00\"\n        },\n        \"SATURDAY\": {\n            \"abertura\": \"11:00:00\",\n            \"fechamento\": \"23:00:00\"\n        },\n        \"SUNDAY\": {\n            \"abertura\": \"12:00:00\",\n            \"fechamento\": \"22:00:00\"\n        }\n    }\n}"
+						},
+						"url": "{{baseUrl}}/restaurantes/1",
+						"description": "Atualiza os dados de um restaurante"
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir Restaurante",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/restaurantes/1",
+						"description": "Remove um restaurante do sistema"
+					},
+					"response": []
+				}
+			],
+			"description": "Operações relacionadas a restaurantes"
+		},
+		{
+			"name": "Reservas",
+			"item": [
+				{
+					"name": "Reservar Mesa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cliente\": \"João Silva\",\n    \"dataHora\": \"2025-04-01T19:00:00\",\n    \"numeroPessoas\": 5,\n    \"restauranteId\": 1,\n    \"usuarioId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/reservas",
+						"description": "Faz uma reserva de mesa em um restaurante"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Reserva por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/reservas/1",
+						"description": "Busca uma reserva pelo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todas as Reservas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/reservas",
+						"description": "Lista todas as reservas"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Reservas por Usuário",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/reservas/usuario/1",
+						"description": "Lista reservas de um usuário específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Reservas por Restaurante",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/reservas/restaurante/1",
+						"description": "Lista reservas de um restaurante específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Confirmar Reserva",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": "{{baseUrl}}/reservas/1/confirmar",
+						"description": "Confirma uma reserva pendente"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar Reserva",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reservas/1?usuarioId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reservas",
+								"1"
+							],
+							"query": [
+								{
+									"key": "usuarioId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Cancela uma reserva existente"
+					},
+					"response": []
+				}
+			],
+			"description": "Operações relacionadas a reservas"
+		},
+		{
+			"name": "Avaliações",
+			"item": [
+				{
+					"name": "Avaliar Restaurante",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cliente\": \"João Silva\",\n    \"nota\": 5,\n    \"comentario\": \"Ótimo atendimento e comida excelente!\",\n    \"restauranteId\": 1,\n    \"usuarioId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/avaliacoes",
+						"description": "Envia uma avaliação para um restaurante"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Avaliações por Restaurante",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/avaliacoes/restaurante/1",
+						"description": "Lista avaliações de um restaurante específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Avaliações por Usuário",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/avaliacoes/usuario/1",
+						"description": "Lista avaliações feitas por um usuário específico"
+					},
+					"response": []
+				}
+			],
+			"description": "Operações relacionadas a avaliações de restaurantes"
+		}
+	]
+}
